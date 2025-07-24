@@ -38,7 +38,7 @@ class ValidationMessagesTest extends TestCase
 
         $messages = $validator->errors()->get('role');
 
-        $this->assertContains('Die ausgewählte Rolle ist ungültig.', $messages);
+        $this->assertContains('Ungültige Rolle ausgewählt.', $messages);
     }
 
     #[Test]
