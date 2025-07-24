@@ -4,9 +4,12 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder {
     public function run(): void {
+        DB::table('roles')->truncate();
+
         $roles = [
             ['name' => 'user', 'description' => 'Standard user'],
             ['name' => 'content_provider', 'description' => 'Performer or creator'],
