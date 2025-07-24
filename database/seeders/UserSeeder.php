@@ -16,6 +16,7 @@ class UserSeeder extends Seeder {
                 'date_of_birth' => '1977-06-02',
                 'password' => Hash::make('H@nsen*1977'),
                 'email_verified_at' => now(),
+                'role' => 'user',
             ]
         );
 

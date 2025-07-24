@@ -15,6 +15,7 @@ $itemsToInclude = @(
     "app",
     "routes",
     "config",
+    "resources/lang",
     "composer.json",
     "composer.lock",
     "artisan",

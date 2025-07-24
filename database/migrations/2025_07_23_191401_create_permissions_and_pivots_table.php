@@ -21,7 +21,8 @@ return new class extends Migration {
 
         Schema::create('permission_user', function (Blueprint $table) {
             $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->primary(['permission_id', 'user_id']);
         });
     }
