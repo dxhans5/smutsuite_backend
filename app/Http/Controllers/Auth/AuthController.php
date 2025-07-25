@@ -17,6 +17,8 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    // TODO: Add /email/resend endpoint if needed later for verification link recovery
+
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -104,22 +106,34 @@ class AuthController extends Controller
         ]);
 
         // Check age manually for now
-        if (now()->diffInYears($validated['date_of_birth']) < 21) {
+        $dob = Carbon::parse($validated['date_of_birth']);
+        if ($dob->gt(now()->subYears(21))) {
             throw ValidationException::withMessages([
-                'date_of_birth' => 'You must be at least 21 years old to register.',
+                'date_of_birth' => __('auth.underage'),
             ]);
         }
 
+        // Create the user
         $user = User::create([
             'display_name' => $validated['display_name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'date_of_birth' => $validated['date_of_birth'],
+            'role' => $validated['role'],
         ]);
 
         // Attach role
         $roleModel = Role::where('name', $validated['role'])->first();
+        if (! $roleModel) {
+            throw ValidationException::withMessages([
+                'role' => [__('auth.invalid_role')]
+            ]);
+        }
+
         $user->roles()->attach($roleModel);
+
+        // Email Verification
+        $user->sendEmailVerificationNotification();
 
         return response()->json([
             'success' => true,
@@ -133,11 +147,19 @@ class AuthController extends Controller
             'refresh_token' => ['required', 'string'],
         ]);
 
-        $token = $request->input('refresh_token');
+        $rawToken = $request->input('refresh_token');
 
-        $refreshToken = RefreshToken::all()->first(fn($t) => $t->matchesRawToken($token));
+        $refreshToken = RefreshToken::matchingRawTokenLoose($rawToken);
 
-        if (!$refreshToken) {
+        if (! $refreshToken) {
+            return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
+        }
+
+        if (! $refreshToken) {
+            return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
+        }
+
+        if ($refreshToken->revoked_at) {
             return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
         }
 
@@ -145,17 +167,14 @@ class AuthController extends Controller
             return response()->json(['message' => __('auth.expired_refresh_token')], 401);
         }
 
-        if ($refreshToken->revoked_at) {
-            return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
-        }
-
-        // ✅ Revoke the old token
+        // ✅ Revoke old token
         $refreshToken->update(['revoked_at' => now()]);
 
+        // Only now safe to access user
         $user = $refreshToken->user;
+
         $accessToken = $user->createToken('auth_token')->plainTextToken;
 
-        // ✅ Generate new refresh token
         $newToken = Str::random(64);
         $hashedToken = Hash::make($newToken);
 
@@ -176,4 +195,24 @@ class AuthController extends Controller
             ],
         ]);
     }
+
+    public function resendVerificationEmail(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('auth.email_already_verified'),
+            ], 400);
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'success' => true,
+            'message' => __('auth.verification_resent'),
+        ]);
+    }
+
 }

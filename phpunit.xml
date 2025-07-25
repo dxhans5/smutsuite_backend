@@ -32,5 +32,6 @@
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <env name="DB_USERNAME" value="postgres"/>
         <env name="DB_PASSWORD" value="ssdata!"/>
+        <env name="LOG_CHANNEL" value="testing"/>
     </php>
 </phpunit>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -54,6 +55,11 @@ class RefreshToken extends Model
         return $this->expires_at->isPast();
     }
 
+    public function matchesRawToken(string $raw): bool
+    {
+        return Hash::check($raw, $this->token_hash);
+    }
+
     public function scopeRevoked($query)
     {
         return $query->whereNotNull('revoked_at');
@@ -71,8 +77,8 @@ class RefreshToken extends Model
         return $query->where('expires_at', '>', now());
     }
 
-    public function matchesRawToken(string $rawToken): bool
+    public static function matchingRawTokenLoose(string $rawToken): ?self
     {
-        return Hash::check($rawToken, $this->token_hash);
+        return static::all()->first(fn ($t) => Hash::check($rawToken, $t->token_hash));
     }
 }

@@ -52,6 +52,13 @@ return [
 
     'channels' => [
 
+        'testing' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel-testing.log'),
+            'level' => 'debug',
+            'replace_placeholders' => true,
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),
