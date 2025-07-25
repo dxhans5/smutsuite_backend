@@ -21,7 +21,7 @@ class RefreshTokenTest extends TestCase
         $user = User::factory()->create();
         $token = Str::random(64);
 
-        $refreshToken = RefreshToken::factory()->make([
+        $refreshToken = RefreshToken::factory()->create([
             'user_id' => $user->id,
             'expires_at' => now()->addDays(30),
         ]);
@@ -36,19 +36,19 @@ class RefreshTokenTest extends TestCase
         $this->assertTrue(Hash::check($token, $refreshToken->token_hash));
     }
 
-
     #[Test]
     public function it_checks_token_validity(): void
     {
         $user = User::factory()->create();
         $token = Str::random(64);
 
-        $refreshToken = RefreshToken::factory()->make([
+        $refreshToken = RefreshToken::create([
             'user_id' => $user->id,
-            'expires_at' => now()->addDays(30),
+            'expires_at' => now()->addMinutes(10),
+            'user_agent' => 'test-agent',
+            'ip_address' => '127.0.0.1',
+            'token_hash' => Hash::make($token),
         ]);
-
-        $refreshToken->hash($token);
 
         $found = RefreshToken::unexpired()->get()
             ->first(fn ($t) => $t->matchesRawToken($token));

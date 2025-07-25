@@ -39,7 +39,7 @@ class RefreshTokenTest extends TestCase
         $user = User::factory()->create();
         $token = Str::random(64);
 
-        $refreshToken = RefreshToken::factory()->make([
+        $refreshToken = RefreshToken::factory()->create([
             'user_id' => $user->id,
             'expires_at' => now()->addDays(30),
         ]);
@@ -71,12 +71,12 @@ class RefreshTokenTest extends TestCase
         $user = User::factory()->create();
         $token = Str::random(64);
 
-        $refreshToken = RefreshToken::factory()->make([
+        $refreshToken = RefreshToken::factory()->create([
             'user_id' => $user->id,
-            'expires_at' => now()->subMinute(),
+            'expires_at' => now()->subMinute(), // make it expired
         ]);
 
-        $refreshToken->hash($token); // saves
+        $refreshToken->hash($token);
 
         $response = $this->postJson('/api/auth/refresh', [
             'refresh_token' => $token,
@@ -97,6 +97,7 @@ class RefreshTokenTest extends TestCase
             'expires_at' => now()->addDays(30),
             'token_hash' => Hash::make($token),
         ]);
+
         $refreshTokenId = $refreshToken->id; // Save ID now
 
         // Trigger the rotation
@@ -105,10 +106,7 @@ class RefreshTokenTest extends TestCase
         ]);
 
         // Re-fetch by known ID (controller should have revoked this)
-        $revoked = RefreshToken::findOrFail($refreshTokenId);
-
+        $revoked = RefreshToken::findOrFail($refreshTokenId)->refresh();
         $this->assertNotNull($revoked->revoked_at, __('auth.refresh_not_revoked'));
-        dump(RefreshToken::find($refreshToken->id)->toArray());
-
     }
 }

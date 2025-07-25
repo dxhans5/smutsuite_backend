@@ -21,6 +21,7 @@ class RefreshToken extends Model
         'user_agent',
         'ip_address',
         'expires_at',
+        'revoked_at',
     ];
 
     protected $casts = [
@@ -41,8 +42,9 @@ class RefreshToken extends Model
 
     public function hash(string $token): self
     {
-        $this->token_hash = Hash::make($token);
-        $this->save();
+        $this->update([
+            'token_hash' => Hash::make($token),
+        ]);
 
         return $this;
     }

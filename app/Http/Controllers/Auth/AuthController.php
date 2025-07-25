@@ -55,7 +55,7 @@ class AuthController extends Controller
 
         $rawRefreshToken = Str::random(64);
 
-        $refreshToken = RefreshToken::factory()->make([
+        $refreshToken = RefreshToken::factory()->create([
             'user_id' => $user->id,
             'expires_at' => now()->addDays(30),
             'user_agent' => $request->userAgent(),
@@ -135,39 +135,37 @@ class AuthController extends Controller
 
         $token = $request->input('refresh_token');
 
-        $refreshToken = RefreshToken::active()->get()
-            ->first(fn($t) => $t->matchesRawToken($token));
+        $refreshToken = RefreshToken::all()->first(fn($t) => $t->matchesRawToken($token));
 
         if (!$refreshToken) {
-            return response()->json([
-                'message' => __('auth.invalid_refresh_token'),
-            ], 401);
+            return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
         }
 
         if ($refreshToken->isExpired()) {
-            return response()->json([
-                'message' => __('auth.expired_refresh_token'),
-            ], 401);
+            return response()->json(['message' => __('auth.expired_refresh_token')], 401);
+        }
+
+        if ($refreshToken->revoked_at) {
+            return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
         }
 
         // ✅ Revoke the old token
         $refreshToken->update(['revoked_at' => now()]);
-        logger()->info('Revoked token ID: ' . $refreshToken->id);
-        logger()->info('Revoked at: ' . $refreshToken->revoked_at);
-
 
         $user = $refreshToken->user;
         $accessToken = $user->createToken('auth_token')->plainTextToken;
 
         // ✅ Generate new refresh token
         $newToken = Str::random(64);
-        $newRefreshToken = RefreshToken::factory()->make([
+        $hashedToken = Hash::make($newToken);
+
+        RefreshToken::create([
             'user_id' => $user->id,
             'expires_at' => now()->addDays(30),
             'user_agent' => $request->userAgent(),
             'ip_address' => $request->ip(),
+            'token_hash' => $hashedToken,
         ]);
-        $newRefreshToken->hash($newToken);
 
         return response()->json([
             'success' => true,
