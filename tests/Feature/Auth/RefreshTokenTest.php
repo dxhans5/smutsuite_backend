@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Test;
@@ -69,22 +70,29 @@ class RefreshTokenTest extends TestCase
     public function it_rejects_expired_refresh_token(): void
     {
         $user = User::factory()->create();
-        $token = Str::random(64);
+        $rawToken = Str::random(64);
 
-        $refreshToken = RefreshToken::factory()->create([
+        // Manually insert to bypass model-level filtering
+        DB::table('refresh_tokens')->insert([
+            'id' => Str::uuid()->toString(),
             'user_id' => $user->id,
-            'expires_at' => now()->subMinute(), // make it expired
+            'token_hash' => Hash::make($rawToken),
+            'user_agent' => 'TestAgent',
+            'ip_address' => '127.0.0.1',
+            'expires_at' => now()->subMinute(), // expired
+            'revoked_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        $refreshToken->hash($token);
-
         $response = $this->postJson('/api/auth/refresh', [
-            'refresh_token' => $token,
+            'refresh_token' => $rawToken,
         ]);
 
         $response->assertUnauthorized()
             ->assertJson(['message' => __('auth.expired_refresh_token')]);
     }
+
 
 //    #[Test]
 //    public function it_revokes_old_refresh_token_after_rotation(): void

@@ -79,6 +79,15 @@ class RefreshToken extends Model
 
     public static function matchingRawTokenLoose(string $rawToken): ?self
     {
-        return static::all()->first(fn ($t) => Hash::check($rawToken, $t->token_hash));
+        return static::all()->first(fn ($token) => Hash::check($rawToken, $token->token_hash));
+    }
+
+    public static function matchingRawToken(string $rawToken): ?self
+    {
+        return static::query()
+            ->whereNull('revoked_at')
+            ->where('expires_at', '>', now())
+            ->get()
+            ->first(fn ($token) => Hash::check($rawToken, $token->token_hash));
     }
 }

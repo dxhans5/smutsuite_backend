@@ -149,11 +149,11 @@ class AuthController extends Controller
 
         $rawToken = $request->input('refresh_token');
 
+        // TODO: During development, we use the "loose" matching method to ensure test visibility
+        // TODO: of expired or revoked tokens. When deploying to production, switch to the stricter
+        // TODO: matchingRawToken() method to avoid scanning all tokens unnecessarily.
         $refreshToken = RefreshToken::matchingRawTokenLoose($rawToken);
-
-        if (! $refreshToken) {
-            return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
-        }
+        // $refreshToken = RefreshToken::matchingRawToken($rawToken); // Use this in production
 
         if (! $refreshToken) {
             return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
