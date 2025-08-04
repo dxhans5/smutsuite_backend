@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Database\Factories\DatabaseNotificationFactory;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

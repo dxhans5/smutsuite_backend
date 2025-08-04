@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -16,7 +18,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, HasUuids;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -102,5 +104,15 @@ class User extends Authenticatable implements MustVerifyEmail
             ->merge($directPermissions)
             ->unique()
             ->values();
+    }
+
+    public function publicProfile(): HasOne
+    {
+        return $this->hasOne(\App\Models\PublicProfile::class);
+    }
+
+    public function privateProfile(): HasOne
+    {
+        return $this->hasOne(\App\Models\PrivateProfile::class);
     }
 }

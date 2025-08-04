@@ -7,6 +7,7 @@ return [
     'login_success' => 'Connexion réussie.',
     'logout_success' => 'Déconnexion réussie.',
     'logged_out' => 'Vous avez été déconnecté avec succès.',
+    'unauthorized' => 'Vous n\'êtes pas autorisé à effectuer cette action.',
     'unauthenticated' => 'Non authentifié.',
     'underage' => 'Vous devez avoir au moins 21 ans pour vous inscrire.',
     'verification_success' => 'Votre adresse e-mail a été vérifiée avec succès.',

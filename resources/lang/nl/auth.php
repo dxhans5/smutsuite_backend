@@ -7,6 +7,7 @@ return [
     'login_success' => 'Succesvol ingelogd.',
     'logout_success' => 'Succesvol uitgelogd.',
     'logged_out' => 'U bent succesvol uitgelogd.',
+    'unauthorized' => 'Du bist nicht berechtigt, diese Aktion durchzuführen.',
     'unauthenticated' => 'Niet geauthenticeerd.',
     'underage' => 'Je moet minstens 21 jaar oud zijn om je te registreren.',
     'verification_success' => 'Je e-mailadres is succesvol geverifieerd.',

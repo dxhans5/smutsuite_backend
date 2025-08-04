@@ -7,6 +7,7 @@ return [
     'login_success' => 'Anmeldung erfolgreich.',
     'logout_success' => 'Erfolgreich abgemeldet.',
     'logged_out' => 'Sie wurden erfolgreich abgemeldet.',
+    'unauthorized' => 'Du bist nicht berechtigt, diese Aktion durchzuführen.',
     'unauthenticated' => 'Nicht authentifiziert.',
     'underage' => 'Du musst mindestens 21 Jahre alt sein, um dich zu registrieren.',
     'verification_success' => 'Deine E-Mail-Adresse wurde erfolgreich verifiziert.',
