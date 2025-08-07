@@ -46,7 +46,7 @@ class IdentityController extends Controller
                 'required', 'string', 'max:255',
                 Rule::unique('identities', 'alias')->where(fn ($q) => $q->where('user_id', $user->id)),
             ],
-            'role' => ['required', 'string', 'in:user,creator,host,service_provider,admin'],
+            'role' => ['required', 'string', 'in:user,creator,host,provider,admin'],
             'visibility_level' => ['nullable', 'string', 'in:public,members,hidden'],
         ]);
 
