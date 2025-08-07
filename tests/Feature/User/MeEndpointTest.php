@@ -14,31 +14,42 @@ class MeEndpointTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * ✅ Authenticated user should receive their full profile data,
+     * including assigned roles and permissions (both direct and via roles).
+     */
     #[Test]
-    public function authenticated_user_can_retrieve_their_profile_data()
+    public function it_returns_authenticated_user_profile_data(): void
     {
+        // Create and verify a user
         $user = User::factory()->create([
             'email_verified_at' => now(),
             'password' => Hash::make('password123'),
         ]);
 
-        $role = Role::factory()->create(['name' => 'creator']);
+        // Create a role and permissions
+        $role = Role::firstOrCreate(
+            ['name' => 'creator'],
+            ['description' => 'Test role for creators']
+        );
         $perm1 = Permission::factory()->create(['name' => 'bookings.view']);
         $perm2 = Permission::factory()->create(['name' => 'messages.send']);
         $perm3 = Permission::factory()->create(['name' => 'admin.panel']);
 
-        // Give role two permissions
+        // Attach permissions to role
         $role->permissions()->attach([$perm1->id, $perm2->id]);
 
-        // Give user the role
+        // Assign role and a direct permission to the user
         $user->roles()->attach($role->id);
-
-        // Give user one direct permission
         $user->permissions()->attach($perm3->id);
 
+        // Load relationships before API call
         $user->load('roles.permissions', 'permissions');
-        $response = $this->actingAs($user)->getJson('/api/me');
 
+        // Hit /api/me as the authenticated user
+        $response = $this->actingAs($user)->getJson('/api/auth/me');
+
+        // Assert basic response structure
         $response->assertOk();
         $response->assertJsonStructure([
             'success',
@@ -53,21 +64,23 @@ class MeEndpointTest extends TestCase
             ],
         ]);
 
-        $response->assertJsonFragment([
-            'email' => $user->email,
-        ]);
+        // Assert core profile info
+        $response->assertJsonFragment(['email' => $user->email]);
 
-        // Permissions returned should include all 3 (2 from role, 1 direct)
-        $responseData = $response->json('data');
-        $this->assertContains('bookings.view', $responseData['permissions']);
-        $this->assertContains('messages.send', $responseData['permissions']);
-        $this->assertContains('admin.panel', $responseData['permissions']);
-        $this->assertCount(3, $responseData['permissions']);
+        // Assert all expected permissions (2 via role, 1 direct)
+        $permissions = $response->json('data.permissions');
+        $this->assertContains('bookings.view', $permissions);
+        $this->assertContains('messages.send', $permissions);
+        $this->assertContains('admin.panel', $permissions);
+        $this->assertCount(3, $permissions);
     }
 
+    /**
+     * 🚫 Guests should not be able to access the /me endpoint.
+     */
     #[Test]
-    public function unauthenticated_user_cannot_access_me_endpoint()
+    public function it_denies_access_to_guests(): void
     {
-        $this->getJson('/api/me')->assertUnauthorized();
+        $this->getJson('/api/auth/me')->assertUnauthorized();
     }
 }

@@ -80,9 +80,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Identity::class);
     }
 
-    /**
-     * The currently active identity (nullable).
-     */
     public function activeIdentity()
     {
         return $this->belongsTo(Identity::class, 'active_identity_id');

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Identity;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -30,5 +31,18 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function configure(): Factory|UserFactory
+    {
+        return $this->afterCreating(function (User $user) {
+            if (!$user->active_identity_id) {
+                $identity = Identity::factory()->create([
+                    'user_id' => $user->id,
+                    'is_active' => true,
+                ]);
+                $user->update(['active_identity_id' => $identity->id]);
+            }
+        });
     }
 }

@@ -9,7 +9,8 @@ class MessageThreadFactory extends Factory
 {
     protected $model = MessageThread::class;
 
-    public function definition(): array {
+    public function definition(): array
+    {
         return [
             'subject' => $this->faker->sentence,
         ];
