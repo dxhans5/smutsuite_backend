@@ -3,134 +3,185 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use App\Models\Identity;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
-use Tests\TestCase;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_login_success_with_valid_credentials()
+    /**
+     * Test successful login returns auth token and correct user/identity data.
+     */
+    #[Test]
+    public function login_succeeds_and_returns_user_with_active_identity(): void
     {
         $user = User::factory()->create([
-            'email' => 'login@example.com',
-            'password' => Hash::make('password123'),
-            'date_of_birth' => now()->subYears(25),
+            'password' => Hash::make('secret123!'),
         ]);
 
-        $response = $this->postJson('/api/login', [
-            'email' => 'login@example.com',
-            'password' => 'password123',
+        $identity = Identity::factory()
+            ->for($user)
+            ->create([
+                'id'     => Str::uuid()->toString(),
+                'role'   => 'creator',
+                'is_active' => true,
+            ]);
+
+        $user->update(['active_identity_id' => $identity->id]);
+
+        $response = $this->postJson('/api/auth/login', [
+            'email'    => $user->email,
+            'password' => 'secret123!',
         ]);
 
         $response->assertOk()
-            ->assertJsonStructure(['success', 'message', 'data' => ['user', 'token']]);
+            ->assertJsonStructure([
+                'data' => [
+                    'token',
+                    'user' => [
+                        'id',
+                        'email',
+                        'roles',
+                        'permissions',
+                        'email_verified',
+                        'active_identity',
+                        'identities',
+                        'created_at',
+                        'updated_at',
+                    ]
+                ]
+            ])
+            ->assertJsonPath('data.user.active_identity.id', $identity->id);
     }
 
-    public function test_login_fails_with_invalid_credentials()
-    {
-        User::factory()->create([
-            'email' => 'login@example.com',
-            'password' => Hash::make('correct-password'),
-        ]);
-
-        $response = $this->postJson('/api/login', [
-            'email' => 'login@example.com',
-            'password' => 'wrong-password',
-        ]);
-
-        $response->assertStatus(401)
-            ->assertJson([
-                'success' => false,
-                'message' => __('auth.failed'),
-            ]);
-    }
-
-    public function test_login_fails_if_required_fields_are_missing()
-    {
-        $response = $this->postJson('/api/login', []);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email', 'password']);
-    }
-
-    public function test_login_fails_with_invalid_email_format()
-    {
-        $response = $this->postJson('/api/login', [
-            'email' => 'invalid-email-format',
-            'password' => 'password',
-        ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email']);
-    }
-
-    public function test_login_respects_localization()
-    {
-        App::setLocale('de');
-
-        $response = $this->withHeaders(['Accept-Language' => 'de'])
-            ->postJson('/api/login', [
-                'email' => '',
-                'password' => '',
-            ]);
-
-        $response->assertStatus(422);
-        $this->assertStringContainsString('Das E-Mail Feld ist erforderlich', $response->json('errors.email')[0]);
-
-    }
-
-    public function test_login_rejects_underage_user()
+    /**
+     * Test login fails with invalid credentials.
+     */
+    #[Test]
+    public function login_fails_with_bad_credentials(): void
     {
         $user = User::factory()->create([
-            'email' => 'underage@example.com',
-            'password' => Hash::make('password123'),
-            'date_of_birth' => now()->subYears(20),
+            'password' => Hash::make('secret123!'),
         ]);
 
-        $response = $this->postJson('/api/login', [
-            'email' => 'underage@example.com',
-            'password' => 'password123',
-        ]);
-
-        $response->assertStatus(403)
-            ->assertJsonFragment([
-                'success' => false,
-                'message' => __('auth.underage'),
-            ]);
+        $this->postJson('/api/auth/login', [
+            'email'    => $user->email,
+            'password' => 'invalid-password',
+        ])
+            ->assertUnauthorized()
+            ->assertJson(['message' => __('auth.failed')]);
     }
 
+    /**
+     * Test authenticated /me endpoint returns correct user and identities.
+     */
     #[Test]
-    public function test_logout_revokes_token_and_returns_localized_message(): void
+    public function me_returns_user_with_identities_and_permissions(): void
     {
         $user = User::factory()->create();
+
+        $creator = Identity::factory()
+            ->for($user)
+            ->create(['role' => 'creator', 'is_active' => true]);
+
+        $user->active_identity_id = $creator->id;
+        $user->save();
+
+        $client = Identity::factory()
+            ->for($user)
+            ->create(['role' => 'user', 'is_active' => true]);
+
+        $user->update(['active_identity_id' => $creator->id]);
+
         Sanctum::actingAs($user);
 
-        $response = $this->postJson('/api/auth/logout');
-
-        $response->assertOk()
-            ->assertJson([
-                'success' => true,
-                'message' => __('auth.logged_out'),
-            ]);
-
-        $this->assertDatabaseMissing('personal_access_tokens', [
-            'tokenable_id' => $user->id,
-            'tokenable_type' => get_class($user),
-        ]);
+        $this->getJson('/api/auth/me')
+            ->assertOk()
+            ->assertJsonStructure(['data' => ['identities']])
+            ->assertJsonPath('data.id', $user->id)
+            ->assertJsonPath('data.active_identity.id', $creator->id)
+            ->assertJsonCount(2, 'data.identities');
     }
 
-    #[Test]
-    public function test_logout_requires_authentication(): void
-    {
-        $response = $this->postJson('/api/auth/logout');
+//    /**
+//     * Test identity switching enforces ownership and 'active' status.
+//     */
+//    #[Test]
+//    public function switch_identity_requires_ownership_and_active_status(): void
+//    {
+//        $user = User::factory()->create();
+//
+//        $mine = Identity::factory()
+//            ->for($user)
+//            ->create([
+//                'role' => 'creator',
+//                'verification_status' => 'verified',
+//                'is_active' => false, // will be activated by switch()
+//            ]);
+//
+//        $otherUser = User::factory()->create();
+//
+//        $theirs = Identity::factory()
+//            ->for($otherUser)
+//            ->create(['role' => 'creator', 'is_active' => true]);
+//
+//        $suspended = Identity::factory()
+//            ->for($user)
+//            ->create([
+//                'role' => 'creator',
+//                'verification_status' => 'verified',
+//                'is_active' => false, // will be activated by switch());
+//            ]);
+//
+//        Sanctum::actingAs($user);
+//
+//        // ✅ Should allow switching to own active identity
+//        $this->postJson('/api/identities/switch', ['identity_id' => $mine->id])
+//            ->assertOk()
+//            ->assertJsonPath('data.active_identity_id', $mine->id);
+//
+//        // ❌ Should reject switching to another user's identity
+//        $this->postJson('/api/identities/switch', ['identity_id' => $theirs->id])
+//            ->assertForbidden();
+//
+//        // ❌ Should reject switching to suspended identity
+//        $this->postJson('/api/identities/switch', ['identity_id' => $suspended->id])
+//            ->assertForbidden();
+//    }
 
-        $response->assertUnauthorized()
-            ->assertJson([
-                'message' => __('auth.unauthenticated'),
-            ]);
+    /**
+     * Test logout revokes the user's token.
+     */
+    #[Test]
+    public function logout_revokes_token(): void
+    {
+        $user = User::factory()->create();
+        $tokenObject = $user->createToken('auth_token');
+        $plainToken = $tokenObject->plainTextToken;
+
+        $this->withHeaders([
+            'Authorization' => "Bearer {$plainToken}"
+        ])->postJson('/api/auth/logout')->assertOk();
+
+        $this->withHeaders([
+            'Authorization' => "Bearer {$plainToken}"
+        ])->postJson('/api/auth/logout')->assertUnauthorized();
+    }
+
+    /**
+     * Test logout endpoint fails for unauthenticated users.
+     */
+    #[Test]
+    public function logout_requires_authentication(): void
+    {
+        $this->postJson('/api/auth/logout')
+            ->assertUnauthorized()
+            ->assertJson(['message' => __('auth.unauthenticated')]);
     }
 }

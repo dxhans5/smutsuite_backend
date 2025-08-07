@@ -24,7 +24,12 @@ class UserController extends Controller
 {
     public function me(Request $request): JsonResponse
     {
-        $user = User::with('roles.permissions', 'permissions')->find($request->user()->id);
+        $user = User::with(
+            'roles.permissions',
+            'permissions',
+            'activeIdentity',
+            'identities',
+        )->find($request->user()->id);
         $user->setRelation('all_permissions', $user->all_permissions);
 
         return response()->json([
@@ -137,48 +142,74 @@ class UserController extends Controller
 
     public function getMyProfiles(Request $request): JsonResponse
     {
-        $user = $request->user()->load(['publicProfile', 'privateProfile']);
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
+        $public  = \App\Models\PublicProfile::where('identity_id', $identity->id)->first();
+        $private = \App\Models\PrivateProfile::where('identity_id', $identity->id)->first();
+
         return response()->json([
-            'public_profile' => $user->publicProfile,
-            'private_profile' => $user->privateProfile,
+            'public_profile'  => $public,
+            'private_profile' => $private,
         ]);
     }
 
     public function updatePublicProfile(UpdatePublicProfileRequest $request): JsonResponse
     {
-        $profile = PublicProfile::updateOrCreate(
-            ['user_id' => $request->user()->id],
-            $request->validated()
-        );
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
+        $profile = PublicProfile::firstOrNew(['identity_id' => $identity->id]);
+
+        $this->authorize('updatePublic', $profile);
+
+        $profile->fill($request->validated())->save();
+
         return response()->json($profile);
     }
 
     public function updatePrivateProfile(UpdatePrivateProfileRequest $request): JsonResponse
     {
-        $profile = PrivateProfile::updateOrCreate(
-            ['user_id' => $request->user()->id],
-            $request->validated()
-        );
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
+        $profile = PrivateProfile::firstOrNew(['identity_id' => $identity->id]);
+
+        $this->authorize('updatePrivate', $profile);
+
+        $profile->fill($request->validated())->save();
+
         return response()->json($profile);
     }
 
-    public function getPublicProfile($id): JsonResponse
+    public function getPublicProfile($identityId, Request $request): JsonResponse
     {
-        $profile = PublicProfile::where('user_id', $id)
-            ->where('is_visible', true)
-            ->firstOrFail();
+        $viewer = $request->user();
+        $profile = \App\Models\PublicProfile::where('identity_id', $identityId)->firstOrFail();
+
+        if (!$profile->is_visible) {
+            $owns = $viewer && \App\Models\Identity::forUser($viewer->id)->where('id', $identityId)->exists();
+            abort_unless($owns, 404);
+        }
+
         return response()->json($profile);
     }
 
     public function getMyAvailability(Request $request): JsonResponse
     {
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
         return response()->json(
-            AvailabilityRule::where('user_id', $request->user()->id)->get()
+            \App\Models\AvailabilityRule::where('identity_id', $identity->id)->get()
         );
     }
 
     public function updateMyAvailability(Request $request): JsonResponse
     {
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
         $request->validate([
             'availability' => 'required|array',
             'availability.*.day_of_week' => 'required|integer|between:0,6',
@@ -187,11 +218,11 @@ class UserController extends Controller
             'availability.*.booking_type' => 'required|string',
         ]);
 
-        AvailabilityRule::where('user_id', $request->user()->id)->delete();
+        \App\Models\AvailabilityRule::where('identity_id', $identity->id)->delete();
 
         foreach ($request->availability as $rule) {
-            AvailabilityRule::create([
-                'user_id' => $request->user()->id,
+            \App\Models\AvailabilityRule::create([
+                'identity_id' => $identity->id,
                 ...$rule,
             ]);
         }
@@ -199,26 +230,34 @@ class UserController extends Controller
         return response()->json(['message' => __('Availability updated.')]);
     }
 
-    public function getUserAvailability(User $user): JsonResponse
+    public function getUserAvailability(\App\Models\User $userOrLegacy, Request $request): JsonResponse
     {
+        // Prefer: route-model bind an Identity instead of User
+        $identityId = $request->route('identity') ?? null;
+        abort_unless($identityId, 404);
+
         return response()->json(
-            AvailabilityRule::where('user_id', $user->id)->where('is_active', true)->get()
+            \App\Models\AvailabilityRule::where('identity_id', $identityId)
+                ->where('is_active', true)->get()
         );
     }
 
     public function createBookingRequest(Request $request): JsonResponse
     {
         $request->validate([
-            'creator_id' => 'required|uuid|exists:users,id',
+            'creator_identity_id' => 'required|uuid|exists:identities,id',
             'requested_at' => 'required|date|after:now',
             'booking_type' => 'required|string',
             'notes' => 'nullable|string',
             'timezone' => 'nullable|string',
         ]);
 
-        $booking = BookingRequest::create([
-            'creator_id' => $request->creator_id,
-            'client_id' => $request->user()->id,
+        $clientIdentity = $request->currentIdentity();
+        abort_unless($clientIdentity, 403, 'No active identity selected.');
+
+        $booking = \App\Models\BookingRequest::create([
+            'creator_identity_id' => $request->creator_identity_id,
+            'client_identity_id'  => $clientIdentity->id,
             'requested_at' => $request->requested_at,
             'booking_type' => $request->booking_type,
             'status' => 'pending',
@@ -231,33 +270,40 @@ class UserController extends Controller
 
     public function getMyBookings(Request $request): JsonResponse
     {
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
         return response()->json([
-            'as_creator' => BookingRequest::where('creator_id', $request->user()->id)->get(),
-            'as_client' => BookingRequest::where('client_id', $request->user()->id)->get(),
+            'as_creator' => \App\Models\BookingRequest::where('creator_identity_id', $identity->id)->get(),
+            'as_client'  => \App\Models\BookingRequest::where('client_identity_id', $identity->id)->get(),
         ]);
     }
 
     public function sendMessage(Request $request): JsonResponse
     {
         $request->validate([
-            'recipient_id' => 'required|uuid|exists:users,id|not_in:' . $request->user()->id,
+            'recipient_identity_id' => 'required|uuid|exists:identities,id',
             'body' => 'required|string|min:1|max:2000',
         ]);
 
-        // Check if thread exists between these two
-        $thread = MessageThread::whereHas('participants', function ($q) use ($request) {
-            $q->where('user_id', $request->user()->id);
+        $sender = $request->currentIdentity();
+        abort_unless($sender, 403, 'No active identity selected.');
+        abort_if($request->recipient_identity_id === $sender->id, 422, 'Cannot message yourself.');
+
+        // Find or create a thread between these two identities
+        $thread = \App\Models\MessageThread::whereHas('participants', function ($q) use ($sender) {
+            $q->where('identity_id', $sender->id);
         })->whereHas('participants', function ($q) use ($request) {
-            $q->where('user_id', $request->recipient_id);
+            $q->where('identity_id', $request->recipient_identity_id);
         })->first();
 
         if (!$thread) {
-            $thread = MessageThread::create();
-            $thread->participants()->attach([$request->user()->id, $request->recipient_id]);
+            $thread = \App\Models\MessageThread::create();
+            $thread->participants()->attach([$sender->id, $request->recipient_identity_id], [], 'participants'); // pivot table uses identity_id now
         }
 
         $message = $thread->messages()->create([
-            'sender_id' => $request->user()->id,
+            'sender_identity_id' => $sender->id,
             'body' => $request->body,
         ]);
 
@@ -266,17 +312,30 @@ class UserController extends Controller
 
     public function getThreads(Request $request): JsonResponse
     {
-        $threads = MessageThread::whereHas('participants', function ($q) use ($request) {
-            $q->where('user_id', $request->user()->id);
-        })->with('participants', 'messages')->latest()->get();
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
+        $threads = \App\Models\MessageThread::whereHas('participants', function ($q) use ($identity) {
+            $q->where('identity_id', $identity->id);
+        })
+            ->with([
+                'participants.identity:id,alias,role,is_active',
+                // If you often show preview/snippet, load latest message only
+                'messages' => fn($q) => $q->latest()->limit(1),
+            ])
+            ->latest()
+            ->get();
 
         return response()->json($threads);
     }
 
     public function getThreadMessages($id, Request $request): JsonResponse
     {
-        $thread = MessageThread::with('messages.sender')
-            ->whereHas('participants', fn ($q) => $q->where('user_id', $request->user()->id))
+        $identity = $request->currentIdentity();
+        abort_unless($identity, 403, 'No active identity selected.');
+
+        $thread = \App\Models\MessageThread::with('messages.senderIdentity')
+            ->whereHas('participants', fn ($q) => $q->where('identity_id', $identity->id))
             ->findOrFail($id);
 
         return response()->json($thread->messages()->latest()->get());

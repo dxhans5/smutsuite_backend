@@ -3,22 +3,25 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use App\Models\Role;
 use App\Models\RefreshToken;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Role;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-    // TODO: Add /email/resend endpoint if needed later for verification link recovery
-
+    /**
+     * Handle login request and return user with token and refresh token.
+     */
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -33,8 +36,12 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = User::where('email', $request->email)->first();
-
+        $user = User::with([
+            'roles.permissions',
+            'permissions',
+            'activeIdentity',
+            'identities',
+        ])->where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -50,18 +57,14 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Optional: revoke old tokens if only one should be active
-        // $user->tokens()->delete();
-
         $token = $user->createToken('auth_token')->plainTextToken;
-
         $rawRefreshToken = Str::random(64);
 
         $refreshToken = RefreshToken::factory()->create([
-            'user_id' => $user->id,
-            'expires_at' => now()->addDays(30),
-            'user_agent' => $request->userAgent(),
-            'ip_address' => $request->ip(),
+            'user_id'     => $user->id,
+            'expires_at'  => now()->addDays(30),
+            'user_agent'  => $request->userAgent(),
+            'ip_address'  => $request->ip(),
         ]);
         $refreshToken->hash($rawRefreshToken);
 
@@ -69,24 +72,35 @@ class AuthController extends Controller
             'success' => true,
             'message' => __('auth.login_success'),
             'data' => [
-                'token' => $token,
-                'user'  => $user->only(['id', 'nickname', 'email', 'age', 'city']),
-                'refresh_token' => $refreshToken,
+                'token'          => $token,
+                'refresh_token'  => $rawRefreshToken,
+                'user'           => new UserResource($user),
             ],
         ]);
     }
 
+    /**
+     * Logout and revoke the access token.
+     */
     public function logout(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $token = $request->bearerToken();
 
-        if (! $user || ! $user->currentAccessToken()) {
+        if (! $token) {
             return response()->json([
                 'message' => __('auth.unauthenticated'),
             ], 401);
         }
 
-        $user->currentAccessToken()->delete();
+        $accessToken = PersonalAccessToken::findToken($token);
+
+        if (! $accessToken) {
+            return response()->json([
+                'message' => __('auth.unauthenticated'),
+            ], 401);
+        }
+
+        $accessToken->delete();
 
         return response()->json([
             'success' => true,
@@ -94,36 +108,35 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Register a new user with 21+ age validation.
+     */
     public function register(Request $request): JsonResponse
     {
-        // This will be replaced with a FormRequest + MustBe21 Rule later
         $validated = $request->validate([
-            'display_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8'],
-            'date_of_birth' => ['required', 'date'],
-            'role' => ['required', Rule::in(['user', 'service provider', 'content provider', 'host'])],
+            'display_name'   => ['required', 'string', 'max:255'],
+            'email'          => ['required', 'email', 'unique:users,email'],
+            'password'       => ['required', 'string', 'min:8'],
+            'date_of_birth'  => ['required', 'date'],
+            'role'           => ['required', Rule::in(['user', 'service provider', 'content provider', 'host'])],
         ]);
 
-        // Check age manually for now
-        $dob = Carbon::parse($validated['date_of_birth']);
-        if ($dob->gt(now()->subYears(21))) {
+        if (Carbon::parse($validated['date_of_birth'])->gt(now()->subYears(21))) {
             throw ValidationException::withMessages([
                 'date_of_birth' => __('auth.underage'),
             ]);
         }
 
-        // Create the user
         $user = User::create([
-            'display_name' => $validated['display_name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'display_name'  => $validated['display_name'],
+            'email'         => $validated['email'],
+            'password'      => Hash::make($validated['password']),
             'date_of_birth' => $validated['date_of_birth'],
-            'role' => $validated['role'],
+            'role'          => $validated['role'],
         ]);
 
-        // Attach role
         $roleModel = Role::where('name', $validated['role'])->first();
+
         if (! $roleModel) {
             throw ValidationException::withMessages([
                 'role' => [__('auth.invalid_role')]
@@ -131,16 +144,17 @@ class AuthController extends Controller
         }
 
         $user->roles()->attach($roleModel);
-
-        // Email Verification
         $user->sendEmailVerificationNotification();
 
         return response()->json([
             'success' => true,
-            'message' => 'User registered successfully',
+            'message' => __('auth.register_success'),
         ], 201);
     }
 
+    /**
+     * Issue a new access token using a valid refresh token.
+     */
     public function refresh(Request $request): JsonResponse
     {
         $request->validate([
@@ -149,53 +163,41 @@ class AuthController extends Controller
 
         $rawToken = $request->input('refresh_token');
 
-        // TODO: During development, we use the "loose" matching method to ensure test visibility
-        // TODO: of expired or revoked tokens. When deploying to production, switch to the stricter
-        // TODO: matchingRawToken() method to avoid scanning all tokens unnecessarily.
         $refreshToken = RefreshToken::matchingRawTokenLoose($rawToken);
-        // $refreshToken = RefreshToken::matchingRawToken($rawToken); // Use this in production
+        // For production use: RefreshToken::matchingRawToken($rawToken);
 
-        if (! $refreshToken) {
+        if (! $refreshToken || $refreshToken->revoked_at || $refreshToken->isExpired()) {
             return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
         }
 
-        if ($refreshToken->revoked_at) {
-            return response()->json(['message' => __('auth.invalid_refresh_token')], 401);
-        }
-
-        if ($refreshToken->isExpired()) {
-            return response()->json(['message' => __('auth.expired_refresh_token')], 401);
-        }
-
-        // ✅ Revoke old token
         $refreshToken->update(['revoked_at' => now()]);
 
-        // Only now safe to access user
         $user = $refreshToken->user;
 
         $accessToken = $user->createToken('auth_token')->plainTextToken;
-
         $newToken = Str::random(64);
-        $hashedToken = Hash::make($newToken);
 
         RefreshToken::create([
-            'user_id' => $user->id,
-            'expires_at' => now()->addDays(30),
-            'user_agent' => $request->userAgent(),
-            'ip_address' => $request->ip(),
-            'token_hash' => $hashedToken,
+            'user_id'     => $user->id,
+            'expires_at'  => now()->addDays(30),
+            'user_agent'  => $request->userAgent(),
+            'ip_address'  => $request->ip(),
+            'token_hash'  => Hash::make($newToken),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => __('auth.refresh_success'),
             'data' => [
-                'token' => $accessToken,
-                'refresh_token' => $newToken,
+                'token'          => $accessToken,
+                'refresh_token'  => $newToken,
             ],
         ]);
     }
 
+    /**
+     * Resend the email verification link to the current user.
+     */
     public function resendVerificationEmail(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -214,5 +216,4 @@ class AuthController extends Controller
             'message' => __('auth.verification_resent'),
         ]);
     }
-
 }

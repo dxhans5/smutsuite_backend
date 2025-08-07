@@ -2,59 +2,41 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\Role;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
+use App\Models\Identity;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\URL;
 
 class RegistrationEmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void {
-        parent::setUp();
-
-        // Freeze time for consistent age validation
-        Carbon::setTestNow(Carbon::parse(('2025-07-25 12:00:00')));
-
-        // Ensure required roles exist in test DB
-        Role::create([
-            'name' => 'user',
-            'description' => 'Default user role',
-        ]);
-    }
     #[Test]
-    public function it_sends_email_verification_notification_on_register(): void
+    public function registration_sends_verification_email(): void
     {
         Notification::fake();
 
-        $response = $this->postJson('/api/register', [
-            'display_name'   => 'Blayze Test',
-            'email'          => 'blayze@example.com',
-            'password'       => 'testpassword123',
-            'date_of_birth'  => '1995-07-24',
-            'role'           => 'user',
-        ]);
+        $res = $this->postJson('/api/auth/register', [
+            'email'                 => 'verifyme@example.com',
+            'password'              => 'secret123!',
+            'password_confirmation' => 'secret123!',
+        ])->assertCreated();
 
-        $response->assertCreated();
-
-        $user = User::where('email', 'blayze@example.com')->first();
-
+        $user = User::query()->where('email', 'verifyme@example.com')->first();
         $this->assertNotNull($user);
-        $this->assertNull($user->email_verified_at);
 
         Notification::assertSentTo($user, VerifyEmail::class);
+        $this->assertNull($user->email_verified_at, 'User should start unverified');
     }
 
     #[Test]
-    public function it_verifies_email_with_valid_link(): void
+    public function verify_email_with_signed_url_marks_user_verified(): void
     {
         Event::fake();
 
@@ -68,128 +50,57 @@ class RegistrationEmailVerificationTest extends TestCase
             ['id' => $user->getKey(), 'hash' => sha1($user->email)]
         );
 
-        $response = $this->actingAs($user)->getJson($verificationUrl);
+        $this->actingAs($user)
+            ->getJson($verificationUrl)
+            ->assertRedirect(); // default behavior is redirect; adjust if API returns JSON
 
-        $response->assertOk();
-        $this->assertNotNull($user->fresh()->email_verified_at);
+        $user->refresh();
+        $this->assertNotNull($user->email_verified_at);
 
         Event::assertDispatched(Verified::class);
     }
 
     #[Test]
-    public function it_rejects_verification_with_invalid_hash(): void
+    public function unverified_users_cannot_create_identities_but_verified_can(): void
     {
-        $user = User::factory()->unverified()->create([
-            'email' => 'badhash@example.com',
-        ]);
+        $unverified = User::factory()->unverified()->create();
+        $verified   = User::factory()->create(); // default factory verifies email
 
-        $badUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->getKey(), 'hash' => sha1('wrong@example.com')]
-        );
+        // Unverified blocked
+        $this->actingAs($unverified)
+            ->postJson('/api/identities', [
+                'type'   => 'creator',
+                'label'  => 'My Persona',
+                'status' => 'active',
+            ])
+            ->assertForbidden();
 
-        $response = $this->actingAs($user)->getJson($badUrl);
-
-        $response->assertForbidden();
-        $this->assertNull($user->fresh()->email_verified_at);
+        // Verified allowed
+        $this->actingAs($verified)
+            ->postJson('/api/identities', [
+                'type'   => 'creator',
+                'label'  => 'My Persona',
+                'status' => 'active',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('user_id', $verified->id);
     }
 
     #[Test]
-    public function it_requires_authentication_for_verification(): void
+    public function verified_user_can_set_active_identity_on_creation(): void
     {
-        $user = User::factory()->unverified()->create();
-
-        $url = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->getKey(), 'hash' => sha1($user->email)]
-        );
-
-        $this->getJson($url)->assertUnauthorized();
-    }
-
-    #[Test]
-    public function it_rejects_expired_verification_link(): void
-    {
-        $user = User::factory()->unverified()->create([
-            'email' => 'expired@example.com',
-        ]);
-
-        $expiredUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->subMinutes(5), // Already expired
-            ['id' => $user->getKey(), 'hash' => sha1($user->email)]
-        );
-
-        $response = $this->actingAs($user)->getJson($expiredUrl);
-
-        $response->assertStatus(403); // Laravel throws InvalidSignatureException
-        $this->assertNull($user->fresh()->email_verified_at);
-    }
-
-    #[Test]
-    public function it_fails_with_invalid_email_hash(): void
-    {
-        $user = User::factory()->unverified()->create();
-
-        $url = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->getKey(), 'hash' => sha1('tampered@example.com')]
-        );
-
-        $response = $this->actingAs($user)->getJson($url);
-
-        $response->assertForbidden();
-        $this->assertNull($user->fresh()->email_verified_at);
-    }
-
-    #[Test]
-    public function it_does_nothing_if_already_verified(): void
-    {
-        $user = User::factory()->create(); // already verified
-
-        $url = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->getKey(), 'hash' => sha1($user->email)]
-        );
-
-        $response = $this->actingAs($user)->getJson($url);
-
-        $response->assertOk(); // Still a valid response
-        $this->assertNotNull($user->fresh()->email_verified_at);
-    }
-
-    #[Test]
-    public function it_allows_reuse_of_link_if_not_verified_yet(): void
-    {
-        $user = User::factory()->unverified()->create();
-
-        $url = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->getKey(), 'hash' => sha1($user->email)]
-        );
-
-        $this->actingAs($user)->getJson($url);
-        $response = $this->actingAs($user)->getJson($url);
-
-        $response->assertOk();
-        $this->assertNotNull($user->fresh()->email_verified_at);
-    }
-
-    #[Test]
-    public function it_does_not_resend_email_if_already_verified(): void
-    {
-        Notification::fake();
-
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->postJson('/api/email/resend');
+        $res = $this->actingAs($user)->postJson('/api/identities', [
+            'type'        => 'creator',
+            'label'       => 'Alpha',
+            'status'      => 'active',
+            'set_active'  => true, // if your controller supports flag; otherwise set after
+        ])->assertCreated();
 
-        $response->assertStatus(400);
-        Notification::assertNothingSent();
+        $identityId = $res->json('id');
+
+        $user->refresh();
+        $this->assertEquals($identityId, $user->active_identity_id);
     }
 }

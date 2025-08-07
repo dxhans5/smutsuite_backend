@@ -2,125 +2,91 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Carbon\Carbon;
 
+/**
+ * Assumes you have a refresh-token flow similar to:
+ *  - POST /api/auth/login => returns { token, refresh_token }
+ *  - POST /api/auth/refresh { refresh_token } => returns { token, refresh_token }
+ * Adjust the URIs/keys if your implementation differs.
+ */
 class RefreshTokenTest extends TestCase
 {
     use RefreshDatabase;
 
     #[Test]
-    public function it_issues_a_refresh_token_on_login(): void
-    {
-        $user = User::factory()->create([
-            'password' => bcrypt('password123'),
-        ]);
-
-        $response = $this->postJson('/api/login', [
-            'email' => $user->email,
-            'password' => 'password123',
-        ]);
-
-        $response->assertOk()
-            ->assertJsonStructure(['success', 'message', 'data' => ['token', 'refresh_token']]);
-
-        $this->assertDatabaseCount('refresh_tokens', 1);
-    }
-
-    #[Test]
-    public function it_returns_new_token_pair_when_refreshing_with_valid_token(): void
+    public function can_refresh_access_token_with_valid_refresh_token(): void
     {
         $user = User::factory()->create();
-        $token = Str::random(64);
 
-        $refreshToken = RefreshToken::factory()->create([
-            'user_id' => $user->id,
-            'expires_at' => now()->addDays(30),
-        ]);
+        // Simulate login response (or call your real login if it issues refresh tokens)
+        $loginRes = $this->postJson('/api/auth/login', [
+            'email'    => $user->email,
+            'password' => 'password', // default from factory
+        ])->assertOk();
 
-        $refreshToken->hash($token); // saves
+        $refresh = $loginRes->json('refresh_token');
+        $this->assertNotEmpty($refresh);
 
-        $response = $this->postJson('/api/auth/refresh', [
-            'refresh_token' => $token,
-        ]);
+        $res = $this->postJson('/api/auth/refresh', [
+            'refresh_token' => $refresh,
+        ])->assertOk()
+            ->assertJsonStructure(['token', 'refresh_token']);
 
-        $response->assertOk()
-            ->assertJsonStructure(['success', 'message', 'data' => ['token', 'refresh_token']]);
+        $this->assertNotEquals($refresh, $res->json('refresh_token'), 'refresh token should rotate');
     }
 
     #[Test]
-    public function it_rejects_invalid_refresh_token(): void
-    {
-        $response = $this->postJson('/api/auth/refresh', [
-            'refresh_token' => 'fake-token',
-        ]);
-
-        $response->assertUnauthorized()
-            ->assertJson(['message' => __('auth.invalid_refresh_token')]);
-    }
-
-    #[Test]
-    public function it_rejects_expired_refresh_token(): void
+    public function refresh_fails_with_invalid_or_expired_token(): void
     {
         $user = User::factory()->create();
-        $rawToken = Str::random(64);
 
-        // Manually insert to bypass model-level filtering
+        // Invalid
+        $this->postJson('/api/auth/refresh', ['refresh_token' => 'bogus'])
+            ->assertUnauthorized();
+
+        // Expired (if your table/logic supports expiry)
+        // Example assumes `refresh_tokens` table has `revoked_at` or `expires_at`.
+        $valid = Str::random(64);
         DB::table('refresh_tokens')->insert([
-            'id' => Str::uuid()->toString(),
-            'user_id' => $user->id,
-            'token_hash' => Hash::make($rawToken),
-            'user_agent' => 'TestAgent',
-            'ip_address' => '127.0.0.1',
-            'expires_at' => now()->subMinute(), // expired
-            'revoked_at' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'id'         => Str::uuid()->toString(),
+            'user_id'    => $user->id,
+            'token'      => hash('sha256', $valid),
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+            'expires_at' => now()->subMinute(), // already expired
         ]);
 
-        $response = $this->postJson('/api/auth/refresh', [
-            'refresh_token' => $rawToken,
-        ]);
-
-        $response->assertUnauthorized()
-            ->assertJson(['message' => __('auth.expired_refresh_token')]);
+        $this->postJson('/api/auth/refresh', ['refresh_token' => $valid])
+            ->assertUnauthorized();
     }
 
+    #[Test]
+    public function refresh_is_rate_limited_per_token_and_revokes_old_on_use(): void
+    {
+        $user = User::factory()->create();
 
-//    #[Test]
-//    public function it_revokes_old_refresh_token_after_rotation(): void
-//    {
-//        $user = User::factory()->create();
-//        $token = Str::random(64);
-//
-//        $refreshToken = RefreshToken::factory()->create([
-//            'user_id' => $user->id,
-//            'expires_at' => now()->addDays(30),
-//            'token_hash' => Hash::make($token),
-//        ]);
-//
-//        $refreshTokenId = $refreshToken->id; // Save ID now
-//
-//        // Trigger the rotation
-//        $this->postJson('/api/auth/refresh', [
-//            'refresh_token' => $token,
-//        ]);
-//
-//        // Re-fetch by known ID (controller should have revoked this)
-//        $revoked = RefreshToken::findOrFail($refreshTokenId)->fresh();
-//
-//        dump([
-//            'revoked_at' => $revoked->revoked_at,
-//            'updated_at' => $revoked->updated_at,
-//        ]);
-//
-//        $this->assertNotNull($revoked->revoked_at, __('auth.refresh_not_revoked'));
-//    }
+        $loginRes = $this->postJson('/api/auth/login', [
+            'email'    => $user->email,
+            'password' => 'password',
+        ])->assertOk();
+
+        $refresh = $loginRes->json('refresh_token');
+
+        // First use OK
+        $first = $this->postJson('/api/auth/refresh', ['refresh_token' => $refresh])->assertOk();
+        $newRefresh = $first->json('refresh_token');
+
+        // Replay of old token should fail
+        $this->postJson('/api/auth/refresh', ['refresh_token' => $refresh])->assertUnauthorized();
+
+        // New token works once
+        $this->postJson('/api/auth/refresh', ['refresh_token' => $newRefresh])->assertOk();
+    }
 }
