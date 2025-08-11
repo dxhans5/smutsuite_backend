@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AccessControl\PermissionController;
+use App\Http\Controllers\AccessControl\RoleController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\AuthController;
@@ -7,6 +9,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,22 +88,26 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     });
 
-    // Roles & Permissions (RBAC)
     Route::prefix('users')->group(function () {
-        Route::post('/{user}/roles/{role}/attach',         [UserController::class, 'attachRole'])->name('users.roles.attach');
-        Route::post('/{user}/roles/{role}/detach',         [UserController::class, 'detachRole'])->name('users.roles.detach');
-        Route::post('/{user}/permissions/{permission}/attach', [UserController::class, 'attachPermission'])->name('users.permissions.attach');
-        Route::post('/{user}/permissions/{permission}/detach', [UserController::class, 'detachPermission'])->name('users.permissions.detach');
-        Route::post('/{user}/assign',                      [UserController::class, 'assignRolesAndPermissions'])->name('users.assign');
-        Route::post('/{user}/remove',                      [UserController::class, 'removeRolesAndPermissions'])->name('users.remove');
+        // Roles
+        Route::post('/{user}/roles/{role}/attach',   [RoleController::class, 'attach'])->name('users.roles.attach');
+        Route::post('/{user}/roles/{role}/detach',   [RoleController::class, 'detach'])->name('users.roles.detach');
+
+        // Permissions
+        Route::post('/{user}/permissions/{permission}/attach', [PermissionController::class, 'attach'])->name('users.permissions.attach');
+        Route::post('/{user}/permissions/{permission}/detach', [PermissionController::class, 'detach'])->name('users.permissions.detach');
+
+        // Bulk
+        Route::post('/{user}/assign', [RoleController::class, 'assignRolesAndPermissions'])->name('users.assign');
+        Route::post('/{user}/remove', [RoleController::class, 'removeRolesAndPermissions'])->name('users.remove');
     });
 
     // Profiles
-    Route::prefix('profiles')->group(function () {
-        Route::get('/me',            [UserController::class, 'getMyProfiles'])->name('profiles.me');
-        Route::put('/me/public',     [UserController::class, 'updatePublicProfile'])->name('profiles.me.public.update');
-        Route::put('/me/private',    [UserController::class, 'updatePrivateProfile'])->name('profiles.me.private.update');
-        Route::get('/{id}/public',   [UserController::class, 'getPublicProfile'])->name('profiles.public.show');
+    Route::prefix('profiles')->controller(ProfileController::class)->group(function () {
+        Route::get('/me',            'getMyProfiles')->name('profiles.me');
+        Route::put('/me/public',     'updatePublicProfile')->name('profiles.me.public.update');
+        Route::put('/me/private',    'updatePrivateProfile')->name('profiles.me.private.update');
+        Route::get('/{id}/public',   'getPublicProfile')->name('profiles.public.show');
     });
 
     // Identities
@@ -112,11 +119,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 
     // Availability
-    Route::prefix('availability')->group(function () {
-        Route::get('/me',     [UserController::class, 'getMyAvailability'])->name('availability.me');
-        Route::put('/me',     [UserController::class, 'updateMyAvailability'])->name('availability.me.update');
-        Route::get('/{user}', [UserController::class, 'getUserAvailability'])->name('availability.user.show');
+    Route::prefix('availability')->controller(AvailabilityController::class)->group(function () {
+        Route::get('/me',     'getMyAvailability')->name('availability.me');
+        Route::put('/me',     'updateMyAvailability')->name('availability.me.update');
+        Route::get('/{identity}', 'getUserAvailability')->name('availability.user.show');
     });
+
 
     // Bookings
     Route::prefix('bookings')->group(function () {

@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 
 /**
  * Identity Model
@@ -20,12 +22,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $verification_status One of: pending, verified, rejected
  * @property string|null $payout_method_id Nullable payout method (UUID)
  * @property bool $is_active Whether this identity is currently active for the user
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
- * @property-read \App\Models\User $user
- * @property-read \App\Models\PublicProfile|null $publicProfile
- * @property-read \App\Models\PrivateProfile|null $privateProfile
+ * @property-read User $user
+ * @property-read PublicProfile|null $publicProfile
+ * @property-read PrivateProfile|null $privateProfile
  */
 class Identity extends Model
 {
@@ -179,5 +181,18 @@ class Identity extends Model
     public function isActive(): bool
     {
         return $this->is_active === true;
+    }
+
+    /**
+     * Retrieve a specific identity belonging to the given user.
+     *
+     * Useful for ensuring access control when working with identity-related resources.
+     *
+     * @param User $user The user who owns the identity.
+     * @return Builder The matched identity or null if not found.
+     */
+    public static function forUser(User $user): Builder
+    {
+        return static::where('user_id', $user->id);
     }
 }
