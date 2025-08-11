@@ -2,16 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BookingRequest extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'creator_id',
-        'client_id',
+        'creator_identity_id',
+        'client_identity_id',
         'requested_at',
         'booking_type',
         'status',
@@ -19,11 +24,8 @@ class BookingRequest extends Model
         'timezone',
     ];
 
-    public function creator() {
-        return $this->belongsTo(User::class, 'creator_id');
-    }
-
-    public function client() {
-        return $this->belongsTo(User::class, 'client_id');
-    }
+    public function creatorIdentity(): BelongsTo
+    { return $this->belongsTo(Identity::class, 'creator_identity_id'); }
+    public function clientIdentity(): BelongsTo
+    { return $this->belongsTo(Identity::class, 'client_identity_id'); }
 }

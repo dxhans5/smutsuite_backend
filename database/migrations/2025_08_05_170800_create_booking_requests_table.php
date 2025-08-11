@@ -7,17 +7,23 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('booking_requests', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('creator_id');
-            $table->uuid('client_id');
-            $table->foreign('creator_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreign('client_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->uuid('id')->primary();
+
+            $table->uuid('creator_identity_id');
+            $table->uuid('client_identity_id');
+
+            $table->foreign('creator_identity_id')->references('id')->on('identities')->cascadeOnDelete();
+            $table->foreign('client_identity_id')->references('id')->on('identities')->cascadeOnDelete();
+
             $table->dateTime('requested_at');
             $table->string('booking_type')->default('chat');
-            $table->string('status')->default('pending'); // pending, accepted, rejected, canceled
+            $table->string('status')->default('pending');
             $table->text('notes')->nullable();
             $table->string('timezone')->nullable();
             $table->timestamps();
+
+            $table->index('creator_identity_id');
+            $table->index('client_identity_id');
         });
     }
 

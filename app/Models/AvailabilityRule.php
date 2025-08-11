@@ -10,7 +10,7 @@ class AvailabilityRule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'identity_id',
         'day_of_week',
         'start_time',
         'end_time',
@@ -18,7 +18,12 @@ class AvailabilityRule extends Model
         'is_active',
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class);
+    protected $casts = [
+        'is_active' => 'bool',
+    ];
+
+    public function identity()
+    {
+        return $this->belongsTo(\App\Models\Identity::class);
     }
 }

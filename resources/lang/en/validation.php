@@ -133,4 +133,8 @@ return [
 
     'attributes' => [],
 
+    'end_after_start' => 'End time must be later than start time.',
+    'timezone'        => 'The selected timezone is invalid.',
+    'booking_type'    => 'The selected booking type is invalid.',
+
 ];

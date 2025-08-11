@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use App\Models\AvailabilityRule;
+use App\Models\Identity;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AvailabilityRuleFactory extends Factory
@@ -12,7 +12,7 @@ class AvailabilityRuleFactory extends Factory
 
     public function definition(): array {
         return [
-            'user_id' => User::factory(),
+            'identity_id' => Identity::factory(),
             'day_of_week' => $this->faker->numberBetween(0, 6),
             'start_time' => '10:00',
             'end_time' => '18:00',

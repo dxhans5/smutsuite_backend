@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccessControl\PermissionController;
 use App\Http\Controllers\AccessControl\RoleController;
+use App\Http\Controllers\Scheduling\AvailabilityController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\AuthController;
@@ -120,10 +121,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // Availability
     Route::prefix('availability')->controller(AvailabilityController::class)->group(function () {
-        Route::get('/me',     'getMyAvailability')->name('availability.me');
-        Route::put('/me',     'updateMyAvailability')->name('availability.me.update');
-        Route::get('/{identity}', 'getUserAvailability')->name('availability.user.show');
+        Route::get('/me', 'getMyAvailability')->name('availability.me');
+        Route::put('/me', 'updateMyAvailability')->name('availability.me.update');
+        Route::get('/{identity}', 'getIdentityAvailability')->name('availability.identity.show');
     });
+
 
 
     // Bookings
