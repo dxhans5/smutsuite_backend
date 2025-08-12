@@ -33,7 +33,9 @@ class UserController extends Controller
             'roles.permissions',
             'permissions',
             'activeIdentity',
-            'identities',
+            'identities' => function ($q) {
+                $q->where('is_active', true);
+            },
         ])->find($request->user()->id);
 
         $user->setRelation('all_permissions', $user->all_permissions);

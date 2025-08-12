@@ -24,5 +24,12 @@ class UserSeeder extends Seeder {
         if ($adminRole && !$virus->roles()->where('role_id', $adminRole->id)->exists()) {
             $virus->roles()->attach($adminRole->id);
         }
+
+        if (isset($virus->active_identity_id)) {
+            // make every non-active identity inactive
+            $virus->identities()
+                ->whereKeyNot($virus->active_identity_id)
+                ->update(['is_active' => false]);
+        }
     }
 }

@@ -14,6 +14,11 @@ class UserResource extends JsonResource
      */
     public function toArray($request): array
     {
+        // Ensure identities in the response are only active ones
+        $identities = $this->relationLoaded('identities')
+            ? $this->identities->where('is_active', true)->values()
+            : $this->identities()->where('is_active', true)->get();
+
         return [
             'id'              => $this->id,
             'email'           => $this->email,
@@ -22,16 +27,16 @@ class UserResource extends JsonResource
             'roles'           => $this->roles?->pluck('name') ?? [],
 
             // Permissions should be pre-loaded via 'permissions' relationship or custom accessor
-            'permissions' => collect($this->all_permissions)->pluck('name')->all(),
+            'permissions'     => collect($this->all_permissions)->pluck('name')->all(),
 
             // Whether the email is verified
             'email_verified'  => (bool) $this->email_verified_at,
 
             // The user's currently selected identity, if available
             'active_identity' => $this->whenLoaded('activeIdentity', fn () => new IdentityResource($this->activeIdentity)),
-            'identities' => IdentityResource::collection(
-                $this->identities ?? []
-            ),
+
+            // Only active identities returned
+            'identities'      => IdentityResource::collection($identities),
 
             // Timestamps
             'created_at'      => $this->created_at,
