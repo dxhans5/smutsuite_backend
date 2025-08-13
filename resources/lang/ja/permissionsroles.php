@@ -1,13 +1,13 @@
 <?php
 
 return [
-    'permission_attach_success' => '権限が追加されました。',
-    'permission_detach_success' => '権限が削除されました。',
-    'permission_already_attached' => 'この権限は既に追加されています。',
-    'permission_not_attached' => 'ユーザーにこの権限はありません。',
-    'role_attach_success' => 'ロールが追加されました。',
-    'role_detach_success' => 'ロールが削除されました。',
-    'role_not_found' => 'ロールが見つかりません。',
-    'bulk_assign_success' => 'ロールと権限が正常に追加されました。',
-    'bulk_remove_success' => 'ロールと権限が正常に削除されました。',
+    'permission_attach_success'   => '権限を付与しました。',
+    'permission_detach_success'   => '権限を解除しました。',
+    'permission_already_attached' => 'その権限はすでに付与されています。',
+    'permission_not_attached'     => 'ユーザーに権限が見つかりません。',
+    'role_attach_success'         => 'ロールを付与しました。',
+    'role_detach_success'         => 'ロールを解除しました。',
+    'role_not_found'              => 'ロールが見つかりません。',
+    'bulk_assign_success'         => 'ロールと権限を正常に割り当てました。',
+    'bulk_remove_success'         => 'ロールと権限を正常に解除しました。',
 ];

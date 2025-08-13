@@ -17,10 +17,9 @@ class IdentityFactory extends Factory
             'id' => (string) Str::uuid(),
             'user_id' => User::factory(),
             'alias' => $this->faker->unique()->userName(),
-            'role' => $this->faker->randomElement(['user', 'creator', 'host', 'service_provider']),
-            'visibility_level' => 'public',
+            'type' => $this->faker->randomElement(['user', 'creator', 'host', 'service_provider']),
+            'visibility' => 'public',
             'verification_status' => 'pending',
-            'payout_method_id' => null,
             'is_active' => false,
         ];
     }

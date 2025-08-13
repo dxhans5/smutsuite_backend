@@ -29,7 +29,7 @@ class AuthControllerTest extends TestCase
             ->for($user)
             ->create([
                 'id'     => Str::uuid()->toString(),
-                'role'   => 'creator',
+                'type'   => 'creator',
                 'is_active' => true,
             ]);
 
@@ -88,14 +88,14 @@ class AuthControllerTest extends TestCase
 
         $creator = Identity::factory()
             ->for($user)
-            ->create(['role' => 'creator', 'is_active' => true]);
+            ->create(['type' => 'creator', 'is_active' => true]);
 
         $user->active_identity_id = $creator->id;
         $user->save();
 
         $client = Identity::factory()
             ->for($user)
-            ->create(['role' => 'user', 'is_active' => true]);
+            ->create(['type' => 'user', 'is_active' => true]);
 
         $user->update(['active_identity_id' => $creator->id]);
 
@@ -108,52 +108,6 @@ class AuthControllerTest extends TestCase
             ->assertJsonPath('data.active_identity.id', $creator->id)
             ->assertJsonCount(2, 'data.identities');
     }
-
-//    /**
-//     * Test identity switching enforces ownership and 'active' status.
-//     */
-//    #[Test]
-//    public function switch_identity_requires_ownership_and_active_status(): void
-//    {
-//        $user = User::factory()->create();
-//
-//        $mine = Identity::factory()
-//            ->for($user)
-//            ->create([
-//                'role' => 'creator',
-//                'verification_status' => 'verified',
-//                'is_active' => false, // will be activated by switch()
-//            ]);
-//
-//        $otherUser = User::factory()->create();
-//
-//        $theirs = Identity::factory()
-//            ->for($otherUser)
-//            ->create(['role' => 'creator', 'is_active' => true]);
-//
-//        $suspended = Identity::factory()
-//            ->for($user)
-//            ->create([
-//                'role' => 'creator',
-//                'verification_status' => 'verified',
-//                'is_active' => false, // will be activated by switch());
-//            ]);
-//
-//        Sanctum::actingAs($user);
-//
-//        // ✅ Should allow switching to own active identity
-//        $this->postJson('/api/identities/switch', ['identity_id' => $mine->id])
-//            ->assertOk()
-//            ->assertJsonPath('data.active_identity_id', $mine->id);
-//
-//        // ❌ Should reject switching to another user's identity
-//        $this->postJson('/api/identities/switch', ['identity_id' => $theirs->id])
-//            ->assertForbidden();
-//
-//        // ❌ Should reject switching to suspended identity
-//        $this->postJson('/api/identities/switch', ['identity_id' => $suspended->id])
-//            ->assertForbidden();
-//    }
 
     /**
      * Test logout revokes the user's token.

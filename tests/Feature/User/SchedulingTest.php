@@ -28,12 +28,12 @@ class SchedulingTest extends TestCase
 
         $this->creatorIdentity = Identity::factory()->create([
             'user_id' => $this->creator->id,
-            'role'    => 'creator',
+            'type'    => 'creator',
             'is_active' => true,
         ]);
         $this->clientIdentity = Identity::factory()->create([
             'user_id' => $this->client->id,
-            'role'    => 'user',
+            'type'    => 'user',
             'is_active' => true,
         ]);
 

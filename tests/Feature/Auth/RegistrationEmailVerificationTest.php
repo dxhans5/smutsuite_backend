@@ -40,7 +40,7 @@ class RegistrationEmailVerificationTest extends TestCase
             'password_confirmation' => 'secret123!',
             'display_name'          => 'VerificationTester',
             'date_of_birth'         => '1990-01-01',
-            'role'                  => 'user',
+            'type'                  => 'user',
         ])->assertCreated();
 
         $user = User::where('email', 'verifyme@example.com')->first();
@@ -98,7 +98,7 @@ class RegistrationEmailVerificationTest extends TestCase
             ->postJson('/api/identities', [
                 'type'   => 'creator',
                 'label'  => 'My Persona',
-                'status' => 'active',
+                'is_active' => true,
             ])
             ->assertForbidden();
 
@@ -106,10 +106,9 @@ class RegistrationEmailVerificationTest extends TestCase
         $this->actingAs($verified)
             ->postJson('/api/identities', [
                 'alias'  => 'myalias',
-                'role'   => 'creator',
                 'type'   => 'creator',
                 'label'  => 'My Persona',
-                'status' => 'active',
+                'is_active' => true,
             ])
             ->assertCreated()
             ->assertJsonPath('data.user_id', $verified->id);
@@ -128,12 +127,11 @@ class RegistrationEmailVerificationTest extends TestCase
             'type'       => 'creator',
             'label'      => 'Alpha',
             'alias'      => 'alpha',          // Required
-            'role'       => 'provider',           // Required
-            'status'     => 'active',
+            'is_active'     => true,
             'set_active' => true,             // Optional flag to activate on creation
         ])->assertCreated();
 
-        $identityId = $res->json('id');
+        $identityId = $res->json('data.id');
 
         $user->refresh();
         $this->assertEquals($identityId, $user->active_identity_id);

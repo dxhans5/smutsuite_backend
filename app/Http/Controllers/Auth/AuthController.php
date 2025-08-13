@@ -118,7 +118,7 @@ class AuthController extends Controller
             'email'          => ['required', 'email', 'unique:users,email'],
             'password'       => ['required', 'string', 'min:8'],
             'date_of_birth'  => ['required', 'date'],
-            'role'           => ['required', Rule::in(['user', 'service provider', 'content provider', 'host'])],
+            'type'           => ['required', Rule::in(['user','creator','service_provider','content_provider','host'])],
         ]);
 
         if (Carbon::parse($validated['date_of_birth'])->gt(now()->subYears(21))) {
@@ -132,18 +132,8 @@ class AuthController extends Controller
             'email'         => $validated['email'],
             'password'      => Hash::make($validated['password']),
             'date_of_birth' => $validated['date_of_birth'],
-            'role'          => $validated['role'],
         ]);
 
-        $roleModel = Role::where('name', $validated['role'])->first();
-
-        if (! $roleModel) {
-            throw ValidationException::withMessages([
-                'role' => [__('auth.invalid_role')]
-            ]);
-        }
-
-        $user->roles()->attach($roleModel);
         $user->sendEmailVerificationNotification();
 
         return response()->json([

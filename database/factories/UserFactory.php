@@ -22,7 +22,6 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
             'date_of_birth' => now()->subYears($this->faker->numberBetween(21, 50)),
-            'role' => 'user',
         ];
     }
 

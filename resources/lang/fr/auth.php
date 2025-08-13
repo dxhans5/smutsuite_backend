@@ -1,14 +1,11 @@
 <?php
 
 return [
-    'expired_refresh_token' => 'Votre jeton de rafraîchissement a expiré.',
-    'failed' => 'Les informations d’identification sont incorrectes.',
-    'invalid_role' => 'Le rôle spécifié n’est pas valide.',
-    'login_success' => 'Connexion réussie.',
-    'logout_success' => 'Déconnexion réussie.',
-    'logged_out' => 'Vous avez été déconnecté avec succès.',
-    'unauthorized' => 'Vous n\'êtes pas autorisé à effectuer cette action.',
-    'unauthenticated' => 'Non authentifié.',
-    'underage' => 'Vous devez avoir au moins 21 ans pour vous inscrire.',
-    'verification_success' => 'Votre adresse e-mail a été vérifiée avec succès.',
+    'registered'              => 'Compte créé avec succès.',
+    'logged_in'               => 'Connexion réussie.',
+    'logged_out'              => 'Déconnexion réussie.',
+    'email_verification_sent' => 'E-mail de vérification envoyé.',
+    'email_verified'          => 'E-mail vérifié avec succès.',
+    'invalid_credentials'     => 'Ces identifiants ne correspondent pas à nos enregistrements.',
+    'unauthenticated'         => 'Non authentifié.',
 ];

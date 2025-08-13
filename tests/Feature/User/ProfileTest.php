@@ -62,7 +62,7 @@ class ProfileTest extends TestCase
             'about'            => 'Loving, mean, and highly rated.',
             'is_visible'       => true,
             'hide_from_locals' => false,
-            'role'             => 'creator',
+            'type'             => 'creator',
             'location'         => 'Las Vegas',
         ];
 

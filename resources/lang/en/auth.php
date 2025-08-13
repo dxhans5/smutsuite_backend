@@ -7,4 +7,5 @@ return [
     'email_verification_sent' => 'Verification email sent.',
     'email_verified'          => 'Email verified successfully.',
     'invalid_credentials'     => 'These credentials do not match our records.',
+    'unauthenticated'         => 'Unauthenticated.',
 ];

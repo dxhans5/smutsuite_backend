@@ -51,9 +51,9 @@ class ValidationMessagesTest extends TestCase
     {
         $this->assertLocalizedMessage(
             'de',
-            ['role' => 'invalid_value'],
-            ['role' => 'in:user,provider,host,creator'],
-            'role',
+            ['type' => 'invalid_value'],
+            ['type' => 'in:user,provider,host,creator'],
+            'type',
             'Ungültige Rolle ausgewählt.'
         );
     }
@@ -75,9 +75,9 @@ class ValidationMessagesTest extends TestCase
     {
         $this->assertLocalizedMessage(
             'ja',
-            ['role' => 'invalid_value'],
-            ['role' => 'in:user,provider,host,creator'],
-            'role',
+            ['type' => 'invalid_value'],
+            ['type' => 'in:user,provider,host,creator'],
+            'type',
             '選択された役割は無効です。'
         );
     }

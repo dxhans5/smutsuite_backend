@@ -33,8 +33,8 @@ return new class extends Migration {
                         'id' => $identityId,
                         'user_id' => $user->id,            // UUID FK
                         'alias' => $alias,
-                        'role'  => 'user',                 // safe default; can be updated later
-                        'visibility_level' => 'public',
+                        'type'  => 'user',                 // safe default; can be updated later
+                        'visibility' => 'public',
                         'verification_status' => 'pending',
                         'is_active' => true,
                         'created_at' => now(),

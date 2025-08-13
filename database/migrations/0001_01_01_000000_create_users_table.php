@@ -20,7 +20,6 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable(); // Set when email is verified
             $table->string('password'); // Hashed password
             $table->string('city')->nullable(); // Optional city info for user context
-            $table->enum('role', ['user', 'creator', 'service_provider', 'host']); // Initial signup role
             $table->boolean('has_completed_onboarding')->default(false); // Tracks onboarding completion
             $table->string('onboarding_stage')->nullable(); // Current stage if onboarding not complete
             $table->uuid('invited_by_user_id')->nullable(); // Optional referral user

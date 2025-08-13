@@ -19,7 +19,7 @@ class UpdatePublicProfileRequest extends FormRequest
             'about' => 'nullable|string',
             'is_visible' => 'boolean',
             'hide_from_locals' => 'boolean',
-            'role' => 'nullable|string|in:creator,host,service_provider',
+            'type' => 'nullable|string|in:creator,host,service_provider',
             'location' => 'nullable|string|max:255',
         ];
     }

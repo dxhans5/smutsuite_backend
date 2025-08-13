@@ -1,14 +1,11 @@
 <?php
 
 return [
-    'expired_refresh_token' => 'リフレッシュトークンの有効期限が切れています。',
-    'failed' => '認証情報が正しくありません。',
-    'invalid_role' => '指定されたロールは無効です。',
-    'login_success' => 'ログインに成功しました。',
-    'logout_success' => 'ログアウトしました。',
-    'logged_out' => '正常にログアウトしました。',
-    'unauthorized' => 'この操作を行う権限がありません。',
-    'unauthenticated' => '認証されていません。',
-    'underage' => '登録するには21歳以上である必要があります。',
-    'verification_success' => 'メールアドレスが正常に確認されました。',
+    'registered'              => 'アカウントが作成されました。',
+    'logged_in'               => 'ログインしました。',
+    'logged_out'              => 'ログアウトしました。',
+    'email_verification_sent' => '確認メールを送信しました。',
+    'email_verified'          => 'メールアドレスの確認が完了しました。',
+    'invalid_credentials'     => 'これらの認証情報は当社の記録と一致しません。',
+    'unauthenticated'         => '認証されていません。',
 ];

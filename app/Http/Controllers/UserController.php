@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePrivateProfileRequest;
 use App\Http\Requests\UpdatePublicProfileRequest;
+use App\Http\Resources\NotificationResource;
 use App\Http\Resources\UserResource;
 use App\Models\{
     AvailabilityRule,
@@ -25,25 +26,27 @@ class UserController extends Controller
     use AuthorizesRequests;
 
     /**
-     * Return authenticated user info with roles, permissions, identities.
+     * Auth context: /auth/me
+     * Contract: return Resource (top-level { data: ... }), no extra flags.
      */
-    public function me(Request $request): JsonResponse
+    public function me(Request $request): UserResource
     {
-        $user = User::with([
-            'roles.permissions',
-            'permissions',
-            'activeIdentity',
-            'identities' => function ($q) {
-                $q->where('is_active', true);
-            },
-        ])->find($request->user()->id);
+        /** @var User $user */
+        $user = User::query()
+            ->with([
+                'roles.permissions',
+                'permissions',
+                'activeIdentity',
+                'identities' => function ($q) {
+                    $q->where('is_active', true);
+                },
+            ])
+            ->findOrFail($request->user()->id);
 
+        // Preload computed permissions for UserResource -> all_permissions accessor
         $user->setRelation('all_permissions', $user->all_permissions);
 
-        return response()->json([
-            'success' => true,
-            'data' => new UserResource($user),
-        ]);
+        return new UserResource($user);
     }
 
     // ────────────────────────────────
@@ -111,18 +114,37 @@ class UserController extends Controller
         return response()->json(['message' => __('Notification sent.')]);
     }
 
+    /**
+     * GET /notifications
+     * Contract: { data: [...] } using a Resource collection.
+     */
     public function notifications(Request $request): JsonResponse
     {
+        $notifications = $request->user()->notifications()->latest()->get();
+
         return response()->json([
-            'notifications' => $request->user()->notifications,
+            'data' => NotificationResource::collection($notifications),
         ]);
     }
 
+    /**
+     * POST /notifications/{id}/read
+     * Contract: { data: { id, read_at }, message: __('notifications.marked_as_read') }
+     */
     public function markNotificationAsRead(string $id): JsonResponse
     {
-        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification = $requestUser = auth()->user()
+            ->notifications()
+            ->findOrFail($id);
+
         $notification->markAsRead();
 
-        return response()->json(['message' => __('Notification marked as read.')]);
+        return response()->json([
+            'data'    => [
+                'id'      => (string) $notification->id,
+                'read_at' => $notification->read_at,
+            ],
+            'message' => __('notifications.marked_as_read'),
+        ]);
     }
 }

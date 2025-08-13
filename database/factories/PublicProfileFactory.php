@@ -30,7 +30,7 @@ class PublicProfileFactory extends Factory
             'about'             => $this->faker->paragraph,
             'is_visible'        => true,
             'hide_from_locals'  => false,
-            'role'              => 'creator',
+            'type'              => 'creator',
             'location'          => $this->faker->city,
         ];
     }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\IdentityResource;
 use App\Models\Identity;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,40 +30,88 @@ class IdentityController extends Controller
     }
 
     /**
-     * Create a new identity (max 1 every 72h).
+     * Create an Identity for the authenticated user.
+     *
+     * Request (JSON):
+     *  - alias      (string, required)  Globally unique alias (DB unique index).
+     *  - type       (string, required)  user|creator|service_provider|content_provider|host
+     *  - label      (string, required)  UI label
+     *  - is_active  (bool,    required) Whether to make it the user's active identity now
+     *
+     * Behavior:
+     *  - 72h cooldown for UNVERIFIED users only.
+     *  - If is_active=true: set users.active_identity_id to this id and deactivate all others.
+     *  - All writes are transactional.
+     *
+     * Response (201):
+     *  - Top-level "id" for convenience/back-compat
+     *  - "data" containing the IdentityResource
      */
     public function store(Request $request): JsonResponse
     {
+        /** @var User $user */
         $user = $request->user();
+        $COOLDOWN_HOURS = 72;
 
-        $last = Identity::ownedBy($user->id)->latest()->first();
-        if ($last && now()->diffInHours($last->created_at) < 72) {
-            return response()->json([
-                'message' => __('identities.cooldown_active', ['hours' => 72 - now()->diffInHours($last->created_at)]),
-            ], 422);
+        // Cooldown for unverified users only
+        if (! $user->hasVerifiedEmail()) {
+            $last = Identity::query()
+                ->where('user_id', $user->id)
+                ->latest('created_at')
+                ->first(['created_at']);
+
+            if ($last) {
+                $hoursSince = $last->created_at->diffInHours(now());
+                if ($hoursSince < $COOLDOWN_HOURS) {
+                    return response()->json([
+                        'message' => __('identities.cooldown_active', [
+                            'hours' => $COOLDOWN_HOURS - $hoursSince
+                        ]),
+                    ], 422);
+                }
+            }
         }
 
+        // Validate inputs
         $validated = $request->validate([
-            'alias' => [
-                'required', 'string', 'max:255',
-                Rule::unique('identities', 'alias')->where(fn ($q) => $q->where('user_id', $user->id)),
-            ],
-            'role' => ['required', 'string', 'in:user,creator,host,provider,admin'],
-            'visibility_level' => ['nullable', 'string', 'in:public,members,hidden'],
+            'alias'      => ['required', 'string', 'max:255', Rule::unique('identities', 'alias')],
+            'type'       => ['required', 'string', Rule::in(['user','creator','service_provider','content_provider','host'])],
+            'label'      => ['required', 'string', 'max:255'],
+            'is_active'  => ['required', 'boolean'],
         ]);
 
-        $identity = Identity::create([
-            'id' => (string) Str::uuid(),
-            'user_id' => $user->id,
-            'alias' => $validated['alias'],
-            'role' => $validated['role'],
-            'visibility_level' => $validated['visibility_level'] ?? 'public',
-            'verification_status' => 'pending',
-            'is_active' => false,
-        ]);
+        // Create + optionally flip active pointer atomically
+        $identity = DB::transaction(function () use ($user, $validated) {
+            $identity = Identity::create([
+                'id'        => (string) Str::uuid(), // explicit; HasUuids could also auto-generate
+                'user_id'   => $user->id,
+                'alias'     => $validated['alias'],
+                'type'      => $validated['type'],
+                'label'     => $validated['label'],
+                // visibility + verification_status rely on DB defaults
+                'is_active' => (bool) $validated['is_active'],
+            ]);
 
-        return response()->json(['success' => true, 'data' => $identity], 201);
+            if ($validated['is_active'] === true) {
+                // Point user at this identity
+                $user->forceFill(['active_identity_id' => $identity->id])->save();
+
+                // Deactivate all other identities
+                $user->identities()
+                    ->whereKeyNot($identity->id)
+                    ->update(['is_active' => false]);
+            }
+
+            return $identity;
+        });
+
+        // Back-compat: expose id at top-level, and keep the resource under "data"
+        return response()->json([
+            'id'   => $identity->id,
+            'data' => new IdentityResource($identity),
+        ], 201);
     }
+
 
     /**
      * Switch active identity if owned by user and verified.

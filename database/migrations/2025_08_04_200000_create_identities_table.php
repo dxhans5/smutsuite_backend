@@ -2,35 +2,37 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
+    // Important for Postgres + raw ALTER TABLE right after CREATE
+    public $withinTransaction = false;
+
     public function up(): void
     {
         Schema::create('identities', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('alias')->unique();
 
-            // UUID to match users.id (not foreignId)
-            $table->uuid('user_id');
-
-            $table->string('alias');
-            $table->string('role'); // user, creator, host, service_provider, admin
-            $table->string('visibility_level')->default('public');
-            $table->string('verification_status')->default('pending');
-
-            $table->uuid('payout_method_id')->nullable(); // Optional
-
+            $table->string('type')->default('user');      // canonical: user, creator, service_provider, content_provider, host
+            $table->string('label')->nullable();
+            $table->string('visibility')->default('public');          // public | members | hidden
+            $table->string('verification_status')->default('pending'); // pending | verified | rejected
+            $table->string('avatar_path')->nullable();
             $table->boolean('is_active')->default(false);
+
             $table->timestamps();
-
-            $table->unique(['user_id', 'alias']);
-            $table->index(['user_id', 'role']);
-
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-
-            // Optional: enable if payout_methods.id is UUID
-            // $table->foreign('payout_method_id')->references('id')->on('payout_methods')->nullOnDelete();
         });
+
+        // Postgres CHECK constraint - now safe because we're not in a transaction
+        DB::statement("
+            ALTER TABLE identities
+            ADD CONSTRAINT identities_type_check
+            CHECK (type IN ('user','creator','service_provider','content_provider','host'))
+        ");
     }
 
     public function down(): void

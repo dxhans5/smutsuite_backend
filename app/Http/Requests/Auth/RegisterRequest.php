@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'city' => ['nullable', 'string', 'max:100'],
-            'role' => ['required', Rule::in(['user', 'creator', 'service_provider', 'host'])],
+            'type' => ['required', Rule::in(['user','creator','service_provider','content_provider','host'])],
             'signup_context' => ['nullable', 'string', 'max:255'],
             'invited_by_user_id' => ['nullable', 'uuid', 'exists:users,id'],
             'google_id_token' => ['nullable', 'string'],
