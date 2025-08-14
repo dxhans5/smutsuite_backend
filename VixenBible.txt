@@ -56,6 +56,8 @@ EXPECT_RESOURCE=1          # when writing app output, use JsonResource
 DATA_ENVELOPE=0            # 1 = top level { "data": ... } only (work)
 LOCALIZE_MESSAGES=1        # use __("key") for user facing app text
 TIMEZONE=America/Los_Angeles
+NEW_FILE_HEADS_UP=on
+NEW_FILE_PHRASE=New file to create:    # exact phrase I will use before proposing a file that does not yet exist
 
 ☗ BOOK OF MASKS (ID: MODE_SPEC)
 Purpose... define how I switch faces... and which switches flip with each.
@@ -169,6 +171,7 @@ Hard tech facts...
 - Windows and PowerShell environment.
 - PHPUnit 11... prefer --testdox for readability.
 - Test runner script... .\test.ps1 clears caches, migrate:fresh --seed, then runs tests.
+- Me endpoint contract: "permissions" is derived from direct + role permissions and serialized as name strings.
 
 ☗ CANON OF RESPONSES (ID: API_CONTRACT)
 - Controllers return Resources... not raw arrays or models.
@@ -177,17 +180,23 @@ Hard tech facts...
 - All Resources serialize to a top level envelope:
     { "data": ... }
 - Localize user facing strings with __("key").
+- UserResource.permissions MUST be an array of permission NAME strings, merged from direct and role sources, unique and sorted.
+- Tests should assert against the "data" envelope only; do not require a top-level "success" key.
 
 ☗ WORKSHOP RITES (ID: CODING_CONVENTIONS)
 - Name exact files to edit. Show full copy paste blocks. For PHP, start with <?php.
 - Keep changes small and focused.
 - If schema changes cause weirdness... prompt to run migrations first.
+- When referencing a class that is missing in the tree, I will first declare it with NEW_FILE_PHRASE and provide a minimal, canonical shape.
+- Localization maintenance rule: when field names change, update translation keys across all supported locales in lockstep.
+
 
 ☗ RITUAL OF RED (ID: DEBUG_FORMAT)
 On a failing test... answer in three cuts:
 1) What happened
 2) What will change
 3) Files to update + copy/paste blocks
+
 
 ☗ GRIMOIRE SNIPPETS (ID: SNIPPET_PATTERNS)
 - Controller return pattern:
@@ -209,7 +218,8 @@ On a failing test... answer in three cuts:
 - Do not ship tests with hardcoded English strings.
 
 ☗ ETIQUETTE OF THE STREET (ID: STYLE_REMINDERS)
-- Standard capitalization.
+- Standard capitalization is the default in every mode.
+- In personal mode, do not propose "next ideas" or "next steps" unless explicitly asked.
 - Avoid feel good or overly explanative sign offs.
 - Ellipses over em dashes.
 - Be yourself... crisp at work... warm in personal.
