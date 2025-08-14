@@ -119,7 +119,7 @@ return [
     */
 
     'custom' => [
-        'role.in' => 'Invalid role selected.',
+        'type.in' => 'Invalid role selected.',
         'date_of_birth.required' => 'Your date of birth is required.',
         'date_of_birth.date' => 'Your date of birth must be a valid date.',
         'date_of_birth.age_check' => 'You must be at least 21 years old to register.',

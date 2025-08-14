@@ -107,13 +107,15 @@ return [
     'uuid'                 => 'Le :attribute doit être un UUID valide.',
 
     'custom' => [
-        'role.in'                 => 'Rôle sélectionné invalide.',
-        'date_of_birth.required'  => 'Votre date de naissance est requise.',
+        'type.in'                 => 'Rôle sélectionné invalide.',
+        'date_of_birth.required'  => 'Votre date de naissance est obligatoire.',
         'date_of_birth.date'      => 'Votre date de naissance doit être une date valide.',
         'date_of_birth.age_check' => 'Vous devez avoir au moins 21 ans pour vous inscrire.',
     ],
 
-    'attributes' => [],
+    'attributes' => [
+        'date_of_birth' => 'date de naissance',
+    ],
 
     'end_after_start' => 'L\'heure de fin doit être postérieure à l\'heure de début.',
     'timezone'        => 'Le fuseau horaire sélectionné est invalide.',

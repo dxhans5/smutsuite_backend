@@ -107,7 +107,7 @@ return [
     'uuid'                 => 'De :attribute moet een geldige UUID zijn.',
 
     'custom' => [
-        'role.in'                 => 'Ongeldige rol geselecteerd.',
+        'type.in'                 => 'Ongeldige rol geselecteerd.',
         'date_of_birth.required'  => 'Je geboortedatum is verplicht.',
         'date_of_birth.date'      => 'Je geboortedatum moet een geldige datum zijn.',
         'date_of_birth.age_check' => 'Je moet minimaal 21 jaar oud zijn om te registreren.',

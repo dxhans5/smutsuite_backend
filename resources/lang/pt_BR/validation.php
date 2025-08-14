@@ -107,7 +107,7 @@ return [
     'uuid'                 => 'O campo :attribute deve ser um UUID válido.',
 
     'custom' => [
-        'role.in'                 => 'Função selecionada inválida.',
+        'type.in'                 => 'Função selecionada inválida.',
         'date_of_birth.required'  => 'Sua data de nascimento é obrigatória.',
         'date_of_birth.date'      => 'Sua data de nascimento deve ser uma data válida.',
         'date_of_birth.age_check' => 'Você deve ter pelo menos 21 anos para se cadastrar.',

@@ -107,7 +107,7 @@ return [
     'uuid'                 => ':attribute は有効なUUIDである必要があります。',
 
     'custom' => [
-        'role.in'                 => '無効なロールが選択されました。',
+        'type.in'                 => '選択された役割は無効です。',
         'date_of_birth.required'  => '生年月日は必須です。',
         'date_of_birth.date'      => '生年月日は有効な日付である必要があります。',
         'date_of_birth.age_check' => '登録するには21歳以上である必要があります。',
