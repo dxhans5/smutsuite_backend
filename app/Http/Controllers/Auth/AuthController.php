@@ -30,10 +30,7 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'success' => false,
-                'message' => __('auth.failed'),
-            ], 401);
+            return response()->json(['data' => null, 'message' => __('auth.failed')], 401);
         }
 
         $user = User::with([
@@ -44,10 +41,7 @@ class AuthController extends Controller
         ])->where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => __('auth.failed'),
-            ], 401);
+            return response()->json(['data' => null, 'message' => __('auth.failed')], 403);
         }
 
         if (Carbon::parse($user->date_of_birth)->age < 21) {
@@ -69,12 +63,10 @@ class AuthController extends Controller
         $refreshToken->hash($rawRefreshToken);
 
         return response()->json([
-            'success' => true,
-            'message' => __('auth.login_success'),
             'data' => [
-                'token'          => $token,
-                'refresh_token'  => $rawRefreshToken,
-                'user'           => new UserResource($user),
+                'token'         => $token,
+                'refresh_token' => $rawRefreshToken,
+                'user'          => new UserResource($user),
             ],
         ]);
     }
@@ -87,24 +79,22 @@ class AuthController extends Controller
         $token = $request->bearerToken();
 
         if (! $token) {
-            return response()->json([
-                'message' => __('auth.unauthenticated'),
-            ], 401);
+            return response()->json(['data' => null, 'message' => __('auth.unauthenticated')], 401);
         }
 
         $accessToken = PersonalAccessToken::findToken($token);
 
         if (! $accessToken) {
-            return response()->json([
-                'message' => __('auth.unauthenticated'),
-            ], 401);
+            return response()->json(['data' => null, 'message' => __('auth.unauthenticated')], 401);
         }
 
         $accessToken->delete();
 
         return response()->json([
-            'success' => true,
-            'message' => __('auth.logged_out'),
+            'data' => [
+                'success'         => true,
+                'message' => __('auth.logged_out'),
+            ],
         ]);
     }
 
@@ -137,9 +127,13 @@ class AuthController extends Controller
         $user->sendEmailVerificationNotification();
 
         return response()->json([
-            'success' => true,
-            'message' => __('auth.register_success'),
+            'data' => [
+                'success'         => true,
+                'message' => __('auth.register_success'),
+            ]
         ], 201);
+
+
     }
 
     /**
@@ -183,6 +177,14 @@ class AuthController extends Controller
                 'refresh_token'  => $newToken,
             ],
         ]);
+
+        return response()->json([
+            'data' => [
+                'success'         => true,
+                'message' => __('auth.refresh_success'),
+                'token' => $access
+            ]
+        ], 201);
     }
 
     /**

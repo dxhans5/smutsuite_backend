@@ -12,9 +12,25 @@ class UserResource extends JsonResource
      */
     public function toArray($request): array
     {
-        // Ensure we only expose OTHER active identities (exclude the active one)
-        $activeIdentityId = $this->active_identity_id;
+        // Compute permissions as union of direct + role permissions, unique + sorted (names only)
+        $permNames = collect();
 
+        if ($this->relationLoaded('permissions')) {
+            $permNames = $permNames->merge($this->permissions->pluck('name'));
+        }
+
+        if ($this->relationLoaded('roles')) {
+            $permNames = $permNames->merge(
+                $this->roles->flatMap(function ($role) {
+                    return $role->permissions ? $role->permissions->pluck('name') : collect();
+                })
+            );
+        }
+
+        $permNames = $permNames->unique()->sort()->values();
+
+        // Only include OTHER active identities in the list; the current one is provided as 'active_identity'
+        $activeIdentityId = $this->active_identity_id;
         $identities = $this->whenLoaded('identities', function () use ($activeIdentityId) {
             return $this->identities
                 ->where('is_active', true)
@@ -28,8 +44,7 @@ class UserResource extends JsonResource
             'display_name'    => $this->display_name,
             'email'           => $this->email,
             'roles'           => $this->whenLoaded('roles', fn () => $this->roles->pluck('name')->values()),
-            'permissions'     => $this->whenLoaded('permissions', fn () => $this->permissions->pluck('name')->values()),
-            'all_permissions' => $this->when(isset($this->all_permissions), fn () => $this->all_permissions->pluck('name')->values()),
+            'permissions'     => $this->when(true, fn () => $permNames),
             'email_verified'  => (bool) $this->email_verified_at,
 
             // The current identity, if loaded
