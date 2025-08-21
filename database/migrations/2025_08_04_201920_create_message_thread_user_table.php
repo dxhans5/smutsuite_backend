@@ -4,45 +4,63 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Pivot: message_thread_user
+ *
+ * Represents participants (by Identity) in a message thread.
+ * Each row = one identity participating in one thread, with optional metadata.
+ *
+ * Design notes:
+ * - Threads are identity-based (not user-based).
+ * - Composite uniqueness prevents duplicate participants in a thread.
+ * - Soft deletes allow “leaving” a thread without destroying history.
+ */
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * This table represents the many-to-many relationship between
-     * users and message threads. Each record represents a participant
-     * in a thread, along with optional metadata like last_read_at.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('message_thread_user', function (Blueprint $table) {
             $table->id();
 
-            // Foreign key to message_threads table
+            // FK -> message_threads.id
             $table->foreignId('message_thread_id')
                 ->constrained('message_threads')
                 ->cascadeOnDelete();
 
-            // Foreign key to users table (UUID-based)
-            $table->uuid('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
+            // FK -> identities.id (UUID)
+            // Using foreignUuid keeps it explicit for Postgres UUID columns.
+            $table->foreignUuid('identity_id')
+                ->constrained('identities')
                 ->cascadeOnDelete();
 
-            // Timestamp for when the participant last read the thread
+            // When this participant last read the thread
             $table->timestamp('last_read_at')->nullable();
 
-            // Soft deletion for this pivot row (e.g. user left thread)
+            // Soft delete participant membership without losing audit history
             $table->softDeletes();
 
-            // Timestamps for created_at and updated_at
+            // created_at / updated_at
             $table->timestamps();
+
+            // Prevent duplicate participation rows for the same identity in the same thread
+            $table->unique(['message_thread_id', 'identity_id'], 'mtu_thread_identity_unique');
+
+            // Helpful indexes for common queries:
+            // - whereHas('participants', fn($q) => $q->where('identity_id', ...))
+            // - latest unread checks filtering by identity_id
+            $table->index('identity_id', 'mtu_identity_idx');
+            $table->index('message_thread_id', 'mtu_thread_idx');
+            $table->index('last_read_at', 'mtu_last_read_idx');
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('message_thread_user');
     }
 };
