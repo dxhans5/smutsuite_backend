@@ -1,0 +1,368 @@
+﻿# repo: dxhans5/smutsuite_backend
+# branch: main
+# commit: 1df8357
+# generated: 2025-08-22 06:56:46-06:00
+# count: 180
+# manifest: path | size | sha256
+# app/Events/TestPingEvent.php | 793 | 46F24362329D9784397196738B02EA1192C20FE28BA8E1EA10A2910DEB7F8F99
+# app/Http/Controllers/AccessControl/PermissionController.php | 5914 | 3528C7D0B95184F468B04A5B63AC46F0B813571247C3728D51B2CF1665D6F57C
+# app/Http/Controllers/AccessControl/RoleController.php | 3359 | 9D5341460D3D7BAD1CB6BA9CAB3C05469C48E3495DE60DA4CE183BD98B45840C
+# app/Http/Controllers/Auth/AuthController.php | 6534 | F8899FC60163E27DFE30484235D43D85853B5A83A6958A980C9B2CE43CFA9216
+# app/Http/Controllers/Auth/GoogleAuthController.php | 363 | C968A8D72EFF101A2BD10BFAC269C9B471BA234CF2B76D8B1A3F0AAF4D2CB6CB
+# app/Http/Controllers/Controller.php | 77 | 25D1C1EF8E6CC8A376553FAACFBA2B07D9DFAEE9BDBB84F14F77517580E9DEB1
+# app/Http/Controllers/IdentityController.php | 6819 | F3E1FB8319C97DBE04AF2ED11AA6CC1A5EE91EB355D6874EFA465304E6790203
+# app/Http/Controllers/MessageController.php | 3787 | 7E3DBEA649CEBD3E845FDA15B853C300C0AEB33CEE46298437079CD42A3B96BC
+# app/Http/Controllers/NotificationsController.php | 1504 | 08349ED8A4D66F45EB2736055B2A2B2680E457EA34435B69B3F85AE5CC4E1812
+# app/Http/Controllers/ProfileController.php | 3000 | 74BB2C1CE7BB5BA67364D585ADA5DA4BF64045FB2EBF6BC224D476C774FB1C4B
+# app/Http/Controllers/Scheduling/AvailabilityController.php | 3852 | 6EA53DAB096F86B962DB307192324BAB3912789DB05E696153132BC110E11691
+# app/Http/Controllers/Scheduling/BookingController.php | 0 | E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855
+# app/Http/Controllers/UserController.php | 5006 | E3C750FA9F1C73B14C805E09A5677DB6F1F74063E03DA83F36D56009210E4AAB
+# app/Http/Requests/Auth/RegisterRequest.php | 1272 | A226B16DDB9D1AC25B3443CF5A321296DD0395D7A9CDDCAF4624CE8B6A40A675
+# app/Http/Requests/UpdatePrivateProfileRequest.php | 624 | 7AD1FFC218BDBE866BC79628961EAC797DA06C3B51809B823EE7807FF696667A
+# app/Http/Requests/UpdatePublicProfileRequest.php | 727 | B615B80498213A81DC8B254C8926824BFAF32F0856225B71B387D7DE441FC434
+# app/Http/Resources/IdentityResource.php | 1273 | CE3E14F34A5C16BFB3A2D752CED79344D48BF95AEBDF5805C0A4A1763DFF5239
+# app/Http/Resources/NotificationResource.php | 564 | 7E5F883550A005A7746E28B8BF9101A546AE81275FB7A39140A6C89D62EF3346
+# app/Http/Resources/UserResource.php | 2304 | 3F6EAFD3D79B05C016E91D5FD32E4772BA2D3DA80CB3304905D0E4DE07A7E091
+# app/Middleware/PermissionMiddleware.php | 471 | 8EEDEB99F7518EF628EB1A3B59C6F8C7C7233421C1C7709829AA634065A8E360
+# app/Middleware/RequireActiveIdentity.php | 355 | 16A201CA40A87AA730295498B9089CF50DAD81D9B7F4EBBEEEB8DF0CD21C2000
+# app/Middleware/RoleMiddleware.php | 447 | B0FCB769BC76AFDE4D4A8FEED222A42CE4532693EDBF0D9C8A7F948A23F13A55
+# app/Models/AvailabilityRule.php | 526 | 2B31A5707E806F1486B3A976FA496CC62FAC8C0C200E86228E6CA3C4D72AF687
+# app/Models/BookingRequest.php | 814 | 718DC964469D45C8905304F9E9FAE650A8C2013B12E4E5351C18ADE04542678B
+# app/Models/Identity.php | 4829 | 2E9CAB070F1FC3921CC7DA0A69BEAFB7448B08F7B02899A78D4CAE2A5AEC8623
+# app/Models/IdentitySwitchLog.php | 630 | 997B37554033F07812337816D88DF7C9F77423A8CF715370B3ABEC618D7BE274
+# app/Models/Message.php | 680 | ED6807412D8C91FCAD726D7D5EADF3D9173DAB16F8589EBB180D22F1404B16AC
+# app/Models/MessageThread.php | 2261 | C25D519CD57845CFE3A0F7A63869755015D84ECFA95643D5C1433F1C6367FCB7
+# app/Models/Permission.php | 557 | 988A9FF6B9F0569B73AAF4EA29CDAF93C21F1D34A60FB0B747C72A729627A5C1
+# app/Models/Pivot/MessageThreadUser.php | 1700 | 2437AC236343D3C45A3E7593A4DE0F7B6A94FE2CEEE92BDA2A3F5443B0E4C8C6
+# app/Models/PrivateProfile.php | 2656 | 31394642711E3FF4580A372967E9B5AA3D88E56CCAAD617F9066AFD947D968A1
+# app/Models/PublicProfile.php | 647 | F8A80EF938CA80CBF63B0B0EFC1CE94F9C52EAEA89A4F8F81B1C4A33BFB6F1BA
+# app/Models/RefreshToken.php | 2131 | 98BBEE026996AD3C3DC6DF2D66B9ED9BFDB15DA2EC77B8C16723C9F4BCEB65BF
+# app/Models/Role.php | 580 | 59951C59D7A2AFD99F0CAFBC9B703C1E48614CBCFA12510A73E92CB3F4756E96
+# app/Models/User.php | 5840 | D2F591409F1FC5A19B8CFAA952C86B1A16404CBC48BB59B23A9AAAC02073CB65
+# app/Notifications/GenericNotification.php | 427 | F17198D0E420B4C8B5B2C1D01A552C8CF9D269E712E262500B0997500E4845F7
+# app/Policies/IdentityPolicy.php | 5882 | F826C2E179023127937DFDFA13FFE13DDD643A088E5EAFE290FABE3D9E1F5699
+# app/Policies/ProfilePolicy.php | 1790 | 1639BEDD4141339B4BACDDDEDE8A772F1AEE69F1D6EE87E113D2B61E9859CC7B
+# app/Providers/AppServiceProvider.php | 1245 | 27FF03CA7104842213E984CF7212F16B14F937416A0CD807E8CDE5A0C5488831
+# app/Providers/AuthServiceProvider.php | 598 | 78BDFE396780F042E19B3DBB3546B6F9D4B8BBD4B7F9B06887255BACDA32E14D
+# app/Providers/BroadcastServiceProvider.php | 395 | 0C66C0A63EE8B93AE9A2DA4EC6CA996E7F5EC062A2A6506338F6CD2405C06F4B
+# app/Providers/EventServiceProvider.php | 275 | 90A99DCA06DECD58E98378EC7791712163790FD8B09793723F1953B4293DBFBE
+# app/Providers/RouteServiceProvider.php | 407 | 79152DDD75CD98AE7C196102D29559D82307EFD6E8965B7D998A55909B4ACCCB
+# artisan | 425 | F91A517C0C5D3A904C3F390933964A5E08EC1FC68146882730DAAC4ACA4FFCEC
+# composer.json | 2521 | E440D1E01860B38E20C1DE698555EDA2CF38E2CBE516DA2A1F5FBC5090EBEEF0
+# composer.lock | 340596 | 74CE9F4A3AD19A2EA02E870E8CEEA8744836A4FF45B5A1B3CB7008BE4FE5156A
+# config/app.php | 6357 | CA956E5F7BCA586225EE7DD170D891F09628E2A99D2747240330F40A88838631
+# config/auth.php | 4134 | 986B19AE3C54E21AE892055F519231890C68076AB56AE31F06FAE7156C8BF6BE
+# config/cache.php | 3480 | 38E71CB151E7506907EE1C4A6A27D0F49ACC5CD177AAAC08E14041907FE16567
+# config/database.php | 6268 | 6E468EEB169CE11C1DE70F7B9AA61251C7704E0AF7AC4AEEA14917AC950C9393
+# config/filesystems.php | 2500 | 46B977D9555ED617AA0D42055A0C76A34C9D16C63EE634FF6683BC95712C9317
+# config/logging.php | 4536 | 53887A7585CB426DE3FC72E242A0791944CC17F49E62A554443168AC2E1F2F3D
+# config/mail.php | 3614 | 825C4B149F2FE412A2E37199794E7C05DF7ED86FB51811777FAF80238F748AAE
+# config/queue.php | 3824 | A185A3E86B65DB26938204F4F50CF0C0CA99974E9926B9CDCEF6B7743FEEA482
+# config/sanctum.php | 3037 | 797BD69C696B20299D61B0A4B373B4EBF6C23403346E270D5A03E0005E410FE1
+# config/services.php | 1035 | 4EDCFB0BCEE9523FC1173CA11CB193313AF3D073E9A86C547BA08F927CF942D2
+# config/session.php | 7849 | 12EC2D64EAFFA4A9378A7F0D49F4FFD117F798B6B60A6EFD3BE067E4B01F1F95
+# database/.gitignore | 10 | E758642D95E83E907E010B6E46B07B3F953C7CEF11FE5EBEFC2A77B9D7B4D5F7
+# database/factories/AvailabilityRuleFactory.php | 581 | FCE29D56C959C86FBAAE5D1F3916363F8A8CBF7CCFCE797F4EBFE1655CC9B6FB
+# database/factories/BookingRequestFactory.php | 663 | B00541195718C12D5704585977C4A64D92E80D7F1D45636006C61440CC219A33
+# database/factories/IdentityFactory.php | 691 | 8A4F3650AD5387ADBDFBEB6A6C9B56126DA65B93ECFECEB81A40EF51FB3337D1
+# database/factories/MessageFactory.php | 516 | B93A82A2A7F09B78354A270E37751BF28D20CC6D4BE974FD95DAECF7000BAAFB
+# database/factories/MessageThreadFactory.php | 343 | 88DA5D2571E045880B8BC39BED019F53466B3B8BFD5CC60B05A87EB49AF561E1
+# database/factories/PermissionFactory.php | 394 | ABBEA79F7BAC965AFBD1DCBF15E52C33A8D0D85B335F51322C19A81C2D998D96
+# database/factories/PublicProfileFactory.php | 1026 | DE6534824222BD015CE4D60DBFF57300D32DBB42BA6AA4E9AC64E4434338A8A0
+# database/factories/RefreshTokenFactory.php | 676 | A54356167D7A0027E3D316C0BBE67174BB500D2B4CB77B8A9A9CFA4A27B041BC
+# database/factories/RoleFactory.php | 360 | CB3B91FF737CDD9B84F1B441E15F051CD19CE29F8C94CEB85C2AAEB6941D5C52
+# database/factories/UserFactory.php | 1357 | EA3C93CFE3E563C869D4071B4459508401773FA0DB9A23D69D09BA5798C15B84
+# database/migrations/0001_01_01_000000_create_users_table.php | 4161 | BCF5E878646B1770361B43E868C7EF36039D0F781CFB6344105B23B1B1B0E2E0
+# database/migrations/0001_01_01_000001_create_cache_table.php | 849 | 20F769D3C11748C1CC42C41CD3789B0B9B2CD0DB44EE22D378ADDAC3FF8AED4F
+# database/migrations/0001_01_01_000002_create_jobs_table.php | 1812 | 7C9C712ADF4091C87BF2612F4D0DCCDFA1DF4501553E4AC068B83D7BD5462FA5
+# database/migrations/2025_07_22_203112_create_personal_access_tokens_table.php | 867 | B70DCC64E9A7E842EB2498DC369EFF16F3A451DAA2DCBADA7AB220B9FE1D6430
+# database/migrations/2025_07_23_154207_create_roles_table.php | 1062 | 141A1197C9286E088C4A09C51A26B7A3CB4BE3264907A3084C4C518A34788CA6
+# database/migrations/2025_07_23_154529_create_role_user_table.php | 735 | 1B69C22D79B6D6D398D159DBC262DC2863630673088A2C40F14822ADF4C15BEF
+# database/migrations/2025_07_23_191401_create_permissions_and_pivots_table.php | 1297 | F9DD438FE7B15E7CD4B591A7ACEB8E5EF84F4270C22105AF07717DAE23385B54
+# database/migrations/2025_07_24_221129_create_refresh_token_table.php | 1936 | FD2CEBD39EAF24534B9B7F1C9C6B2224D0675B018D672C22A631F9DA7DD8845C
+# database/migrations/2025_08_04_200000_create_identities_table.php | 4177 | 052CBD55674B490FBDAF0F7FA5E8A54C351B9089EBF851D491F245AA7E97CB90
+# database/migrations/2025_08_04_200100_create_public_profiles_table.php | 2233 | 48DCC7D69699EC16E15B028E5DE02CBDAD3A81399B285866302AD099B9314238
+# database/migrations/2025_08_04_200200_create_private_profiles_table.php | 2026 | DFE37548E00A7429BFC782377ACF824561E17BFEA8BE569C5D5CA9F40D259C7A
+# database/migrations/2025_08_04_200728_create_availability_rules_table.php | 1152 | 36DA58FE11EFEE3912518564753B688B70C3D90EBF61F6DEEDD5066F6386ABDD
+# database/migrations/2025_08_04_201852_create_message_threads_table.php | 1010 | 5B3E8F03EFC0C7A026ED2CFCD371227DC584C2C3A9D5E23DC3E1A8D8D6C81AD7
+# database/migrations/2025_08_04_201920_create_message_thread_user_table.php | 2234 | 78E924722BA84635CBD01F1BEA468E4AE53EEB16F60079645DF78585BBDD72B1
+# database/migrations/2025_08_04_201937_create_messages_table.php | 1618 | 976D52F4ABA8A94A4A77BE6935A2DA7DCEA88CACA6C128F745F799C7B79C8CDC
+# database/migrations/2025_08_04_205511_create_notifications_table.php | 676 | 83194CDEA990CE7D2A0722A20D58C064FAC01A33C8C94E9B00B34DB0297DC124
+# database/migrations/2025_08_05_161401_create_identity_switch_logs_table.php | 1105 | 671A68103DD820EF2039866D4A927BB82B9E173A6B814384F34E63146446A4CD
+# database/migrations/2025_08_05_170800_create_booking_requests_table.php | 1145 | 39390C9D995FFFD4BC35DE86A319A4C3B044CB244BF3073DC05CEB3050E22DAD
+# database/seeders/DatabaseSeeder.php | 463 | 8B9E3FB8FB78C9760A78667333E1030A6059FB858137688A12579DD34AC035B2
+# database/seeders/PermissionSeeder.php | 364 | 1E57DB8D7C7F46B7875281E0456C25199769E066CFC2C9370B5D94556E03FFDE
+# database/seeders/RefreshTokenSeeder.php | 455 | F1C397112CBA8D506BDABAFF17F9FBB8656F7EFA341D06193CA29005D07DCA2F
+# database/seeders/RoleSeeder.php | 1541 | 2393A136A9CF565DD608967052041F7ECE3B4682D85CB7F36421DB13F4D7B900
+# database/seeders/UserSeeder.php | 3587 | A0FFADCF54E2FFD80F9904BD6459D1F10AE0D4EAA46F06E43D8F1F6C0667B6CF
+# resources/lang/de/auth.php | 513 | 300F552D01FD55CE352E0313642161E0E2A289EB413002011BC2BC342B39DEBB
+# resources/lang/de/availability.php | 961 | 470393212CF50DE562CF61F79725E0A710B0E1DCEB1EF6D85B901C8DB9CB6FCB
+# resources/lang/de/bookings.php | 478 | 257C11F134BC0F56A6E772E23F68D93EDC9109725136F1D32ADC40A002BA9497
+# resources/lang/de/common.php | 337 | 1AF20EC4B354235E38BF79E4C100C4D8C4ED054BAE39CEB5EA5A38D6BD40C7FD
+# resources/lang/de/de.json | 175 | 37BFC53E899D5BF7862470815BD30399225137AFF723A0BFA293C17CC292AD5C
+# resources/lang/de/errors.php | 340 | F417CA4BA1E33FCCE162E86279EE70D3360EC9FA37CCC82BF7E571D35F2DA9ED
+# resources/lang/de/identities.php | 582 | 9820FB75374809A3C7AC25EBB548ED1286CF5C64AA0DE2BF7472CB814EFBCFF8
+# resources/lang/de/messages.php | 232 | D8A3C8F88E16F2CDC31AD9353C07D08E73A68C499CA8B4F5141CFF009F9FAB21
+# resources/lang/de/notifications.php | 139 | 3DEE7CE4FBA3A200F52EC40C5B14DD045CA2A31BD817C24DEBB55F93DBC0558A
+# resources/lang/de/permissionsroles.php | 667 | 606E63EA0639F84405EB176002D7CAB275C46CBF3906954FCA00D2A18B9DD8BC
+# resources/lang/de/profiles.php | 189 | F35AD6BF3A93E472D8F35BC03D3D87155AFCC6AEB138F52AD9292A45027B08FD
+# resources/lang/de/validation.php | 7991 | 8F5A20EB86FBB0198EDDC80AC6F337C4369359152B27D108F8A7048E52576366
+# resources/lang/en/auth.php | 465 | A481FCF5F19CB4BEE686F464C11893DFE6E053B5D0CAA8CCCA5B3FD809AFE86D
+# resources/lang/en/availability.php | 866 | F7326BF6FE74A85EF6D30387134C018FED57EF46F9779AE4C973B97787222742
+# resources/lang/en/bookings.php | 449 | 4C7331D98732352793BB9B35EFD68ADB2889E33EDC8A89D6067E3900EAC4BE73
+# resources/lang/en/common.php | 303 | E8BAC56BDCCCC8AD3E8420DF0903F9C2482CA7AB43B0888900B8DCFCAD299192
+# resources/lang/en/en.json | 161 | 8E2B9461DB8A288049D123CC4533701BDB0D44AFE00D81E21E3814BB45253B75
+# resources/lang/en/errors.php | 297 | 82F55CE3E34F3FA78B87F6EBA8868623E7E0E26E506AE8606AB7FBA77095DBC9
+# resources/lang/en/identities.php | 474 | EC60B531D0ECC8088B4F49FA2B17CA36BDE3D5BD26980B0748FF0FE07788B11D
+# resources/lang/en/messages.php | 223 | 4709C507A5563151C56B4147242E8D130CF9A1B35CFEFD2E88D94CC36AFA1BCB
+# resources/lang/en/notifications.php | 121 | CAD1CA4DF22411D355E5565A59FCD37EEB7378DEA17C71A969CF2A305F7F5241
+# resources/lang/en/permissionsroles.php | 562 | 0CBD582AF6B6E3966F2E71A8B2B53736D6FC9E3763187D6394D5098C1D0E029B
+# resources/lang/en/profiles.php | 184 | 84A1CCFBEA6681BD0CE03347909DE5688DB3AFED580AB15611A87F1B3F8E87D5
+# resources/lang/en/validation.php | 8142 | 120045EDE4310C321B74AFBA7207B2F7E5A2AE5B35594F14A691CE8CBDA957A3
+# resources/lang/es/auth.php | 516 | 3EA3DBFF5A83E52519AC47ACD3F4A67795C4D639B917A48A0E82462E2D8B7214
+# resources/lang/es/availability.php | 961 | D0B00629DA1BBB93DF4663F2ADFA2D7572C3C5B001384A884BFE960EBC7F68F1
+# resources/lang/es/bookings.php | 465 | 03A6CBB9DFAE0B48250FA5C62C298E6511793E727CCAEC97035422D29C58304F
+# resources/lang/es/common.php | 317 | 16668F1FECA8024FF8A8623CCC8A25ADC1028C0A2B64DA4D727D1F5C9D6F22A9
+# resources/lang/es/errors.php | 328 | 406B938F0DA532C55BDAD8B64729459C8EBA930DEEF508709DF72ACF6C8AB9A8
+# resources/lang/es/es.json | 169 | D1FC7E8A072D9DE2F68BAF0C4A7DE75A4BA776A9C9B9CC23031E7B7D82FE5924
+# resources/lang/es/identities.php | 566 | 388879F381159CD6F0DADBD68006AB898D54547B2C0FC1C494F0E183A391401A
+# resources/lang/es/messages.php | 225 | 1F3DDA5B0743CE0EC30CC1D018AFC43B1ABB4B595CC9063C72232FEC62AB2BAB
+# resources/lang/es/notifications.php | 131 | 4A84CA8EB2B6EED606E29C2846C8261684D6B804A6A5D73EE4B293EA78E7EFC9
+# resources/lang/es/permissionsroles.php | 614 | 8E38A8C1DA56427D7CD1704017CE1FCB445FF4A15532B3654AA6849B3917798F
+# resources/lang/es/profiles.php | 193 | 1E5FD04C1B4ED21F73613952C91381AF846289E9108244191444AF12E31BFB16
+# resources/lang/es/validation.php | 7960 | 31F0D4B9A630B6B00D2FF641278BA25B0D07BB8A28DEC187F09EF2AFBC2DF73C
+# resources/lang/fr/auth.php | 486 | 7046D8D52FA989D54CEFB20B626F6F888BCF170420CA23ACD4E12EA2DC580258
+# resources/lang/fr/availability.php | 964 | 1BA3093445A1128D89ACD35E9307A060D75286E16DB1E81798805BCF6FF31FF9
+# resources/lang/fr/bookings.php | 499 | 8F4FB1C01C972F67F4F484E752D7660BDD6CD6B1BE25433CF30A19CF8DCF12A4
+# resources/lang/fr/common.php | 336 | 69189962E3D6C1A8CAAB0CFEE5AC0A38C423DBBFA83E2D2FB13CA32AB42274F4
+# resources/lang/fr/errors.php | 326 | 17CF72EA1617994BC1FB40C40DDDDFA40AC93283ABD6B5DEFECCDB51D7857B62
+# resources/lang/fr/fr.json | 180 | A62AC50875B75DD4EC65B8AAC683F00DD5944DB6EC7935D37198E6A32A28B88B
+# resources/lang/fr/identities.php | 583 | DB093DC97758D860C912C18A0575B3E6499ED5EE16EE368EA0DBD9FEF7384BA9
+# resources/lang/fr/messages.php | 235 | C96B5B13AA89C8540EF07F7175655E3D2770B1C7AA8A8F4C371D3BF3ED67FC74
+# resources/lang/fr/notifications.php | 129 | 57E2F30BB17B2C8C6C5C7DF17E1AB3FDC6EFF93EBCDF68F48E2AF4B643D50054
+# resources/lang/fr/permissionsroles.php | 653 | FD880F03655BF6B55E3AB0E87EE9C613C82D6DDC615CAF79BB65A9CFE52C0FB3
+# resources/lang/fr/profiles.php | 190 | 4D328C3492DFB0B33BF0E306F78F4661A22B1ADFA08C5F3B711B233FE6C19B03
+# resources/lang/fr/validation.php | 8364 | 176BDE50C785C83CDA7C0FCDA833520E8EBAC2611CE5E49C83E89A6BF18E5C62
+# resources/lang/ja/auth.php | 566 | 7B9E5BE37FEC66EC597CF3321685D0717A8A914B0401BE701DF1AF6F4894483F
+# resources/lang/ja/availability.php | 1066 | 8E4618E8DD6261546D7CA27B6418C7DC4FF9B75C5DC95A6C577F82FA78468980
+# resources/lang/ja/bookings.php | 565 | 6DD0EABA5FDA3E9E5BF8C9AECFAFD5F38801FC2138C9F963AB3002D7DD052F5A
+# resources/lang/ja/common.php | 329 | B5742FE3DA9E30EF0741F49482CB227907069026C6BE507A41A167F62CD7D16F
+# resources/lang/ja/errors.php | 399 | 0B56A1E13CC53B9F1B3527CC4DB35FDC1834F1871C8D3AA3AD892155BBDD5FF1
+# resources/lang/ja/identities.php | 822 | 79E27C900020B55AD0E977F7C26C87A30A146BD9202758D9908A11A586A13691
+# resources/lang/ja/ja.json | 187 | 189A6D7B0E2754CFA4E7F88EA5AC562FACE1B19A7A06B997E808615426F6F71B
+# resources/lang/ja/messages.php | 298 | F324A05E9B57ED93A7F8523223E50618304BC73900D21C9FE1A36A19A22F22E8
+# resources/lang/ja/notifications.php | 138 | C979B79E785B796009B5718A6EE471CF6A5AE0E8E1DCB176774AD46E2EEEC0E1
+# resources/lang/ja/permissionsroles.php | 754 | 712C97DE3054DA452BCDB149C1963EA2E2C90A2CE3E26FF8E28015EE47CD7FCA
+# resources/lang/ja/profiles.php | 256 | 5DA0DBFA5A7BF6DD9C9E336F61012682B00E883B79FB2F0BD2CA996E1CC3B6E0
+# resources/lang/ja/validation.php | 9425 | 5AE2D8C1C153CD1BF53E396AB6465AD90FC1B21DB4A4A3D8EF45FF7163281DC0
+# resources/lang/nl/auth.php | 482 | 61446C905E7A8B75C915AA0C95E41238DA3D401A7C617D9A53231407FB8DE43C
+# resources/lang/nl/availability.php | 920 | 8EEF90B6F061D2553A1AD7B68265282758C5FB927626F226432359E1030985A3
+# resources/lang/nl/bookings.php | 496 | F7E8ABE1965E14A780D53EABC3539007E2964BEB34A15973A0948AA77EF91558
+# resources/lang/nl/common.php | 320 | E8087A104A82980F7CE5386963C0218E7378039C9E45D9526EDB188B20EB723F
+# resources/lang/nl/errors.php | 319 | B254F8BEC8B5FF9B580BE1566CB846915466DC37ABCCF5D95F9F9C8D324B237A
+# resources/lang/nl/identities.php | 567 | A4DD506F315E35D1BF33DF81539CFF698C32D93CB5732DD69AEFD21C74EE7911
+# resources/lang/nl/messages.php | 228 | 94FFE6E0FB23BDBDAD822CC89A97CEFD198DB34DC2F051DF052DCA43D6F1C218
+# resources/lang/nl/nl.json | 166 | 2674B32892DCF85B89B01D156725DFB279E5CAC2312FB9320D70CEAEE4369CA2
+# resources/lang/nl/notifications.php | 124 | A6DAD69960386EA8A6C16C9D2956F9CDE7FD68549F5AFED811C7D5ECBA329545
+# resources/lang/nl/permissionsroles.php | 635 | 8269A72FAB868BF2195261C14F8B3405439ACA6D7CF8130503C44EF93522B17D
+# resources/lang/nl/profiles.php | 187 | 761CD988BB73E085F0C4B0666F53BF7FC5DF867B832EABBA5089F4EC1E7FB4F2
+# resources/lang/nl/validation.php | 7801 | D232C1C811379E6F449B09727323F9FB1DC306162DCE86ABA92F42C18BE9567F
+# resources/lang/pt_BR/auth.php | 496 | 779738835FEB39BB514B917F94D999488DC084A2213EA8510636A8E3101488F8
+# resources/lang/pt_BR/availability.php | 969 | 7B700C366CB885297CB8A3D4C328FAE468CC441BC700005536DDA48E91575A7E
+# resources/lang/pt_BR/bookings.php | 478 | 7FAB9A6E0F84C7D91431B8AF6EF89AACD832AEA7506D07D3EA2A7744ABB0713F
+# resources/lang/pt_BR/common.php | 319 | 1AE85C0E94E33D37B844A4F8A703056A1A8BBFB5C5DD4D8A66AACAACA2351EC1
+# resources/lang/pt_BR/errors.php | 324 | E8CFAC323D95F7FC4CFDA0A6F1210D19F74E44872A297BA7C621FAFBAC9CB08A
+# resources/lang/pt_BR/identities.php | 564 | 3C8E0803E06E0AA516899026F46797F13B299DBEF96A5F4D8B36322324D41FAB
+# resources/lang/pt_BR/messages.php | 228 | 7D3C9BDAE926C9DA14F717856F858C6896A44AF4D7C81AE29C582869DF979408
+# resources/lang/pt_BR/notifications.php | 129 | 5A37AFCC8FAC82A90BF780C42E84039126571B16EEEBCA61156A654F2592E3E8
+# resources/lang/pt_BR/permissionsroles.php | 660 | 410820C65C21CDAC2EFAE37A4A5074742F85199C510B5128D07B0A34270F4E90
+# resources/lang/pt_BR/profiles.php | 189 | 1A61E8D81B1A041AF65F0AA8AC64AC3EF6599467E70851C4B725BC7D5E3E09DF
+# resources/lang/pt_BR/pt_BR.json | 161 | E9CE4C1239E27D7E3D3780D6F7EBDDCF67642019CF0A5C9FEE98B4025929CAA9
+# resources/lang/pt_BR/validation.php | 7973 | 526DDE01442AEA9F0DF99C173D05A731A1C34EDFE7247A2749EBE4002C72E651
+# resources/views/welcome.blade.php | 82540 | 2712F5909E694CF0676ACE8A9B9DA3E190293E7A6CB5995FDE756491C8385521
+# routes/api.php | 9490 | 97DBD9EF645AEFF7681E191B32EB15102143C8C27A0FC8F5592BDCA4E33E71F6
+# routes/channels.php | 140 | 00993DD3914DA908B11871C35033B1EE30983A9F810197E64BB7040E7C733924
+# routes/console.php | 210 | 9ADCCC33E7DD400683E434774077C7FDB2F299C5712CEDF16A43FDF56F2850FA
+# routes/web.php | 108 | 248C7EEEB43BB61EE4FB6603E52B44843C64F72A841D671BCD41871AAB23F970
+
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Events/TestPingEvent.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/AccessControl/PermissionController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/AccessControl/RoleController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/Auth/AuthController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/Auth/GoogleAuthController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/Controller.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/IdentityController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/MessageController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/NotificationsController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/ProfileController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/Scheduling/AvailabilityController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/Scheduling/BookingController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Controllers/UserController.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Requests/Auth/RegisterRequest.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Requests/UpdatePrivateProfileRequest.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Requests/UpdatePublicProfileRequest.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Resources/IdentityResource.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Resources/NotificationResource.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Http/Resources/UserResource.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Middleware/PermissionMiddleware.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Middleware/RequireActiveIdentity.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Middleware/RoleMiddleware.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/AvailabilityRule.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/BookingRequest.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/Identity.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/IdentitySwitchLog.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/Message.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/MessageThread.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/Permission.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/Pivot/MessageThreadUser.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/PrivateProfile.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/PublicProfile.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/RefreshToken.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/Role.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Models/User.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Notifications/GenericNotification.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Policies/IdentityPolicy.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Policies/ProfilePolicy.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Providers/AppServiceProvider.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Providers/AuthServiceProvider.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Providers/BroadcastServiceProvider.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Providers/EventServiceProvider.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/app/Providers/RouteServiceProvider.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/artisan
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/composer.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/composer.lock
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/app.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/cache.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/database.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/filesystems.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/logging.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/mail.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/queue.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/sanctum.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/services.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/config/session.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/.gitignore
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/AvailabilityRuleFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/BookingRequestFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/IdentityFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/MessageFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/MessageThreadFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/PermissionFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/PublicProfileFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/RefreshTokenFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/RoleFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/factories/UserFactory.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/0001_01_01_000000_create_users_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/0001_01_01_000001_create_cache_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/0001_01_01_000002_create_jobs_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_07_22_203112_create_personal_access_tokens_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_07_23_154207_create_roles_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_07_23_154529_create_role_user_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_07_23_191401_create_permissions_and_pivots_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_07_24_221129_create_refresh_token_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_200000_create_identities_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_200100_create_public_profiles_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_200200_create_private_profiles_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_200728_create_availability_rules_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_201852_create_message_threads_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_201920_create_message_thread_user_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_201937_create_messages_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_04_205511_create_notifications_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_05_161401_create_identity_switch_logs_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/migrations/2025_08_05_170800_create_booking_requests_table.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/seeders/DatabaseSeeder.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/seeders/PermissionSeeder.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/seeders/RefreshTokenSeeder.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/seeders/RoleSeeder.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/database/seeders/UserSeeder.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/availability.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/bookings.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/common.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/de.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/errors.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/identities.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/messages.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/notifications.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/permissionsroles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/profiles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/de/validation.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/availability.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/bookings.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/common.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/en.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/errors.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/identities.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/messages.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/notifications.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/permissionsroles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/profiles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/en/validation.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/availability.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/bookings.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/common.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/errors.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/es.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/identities.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/messages.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/notifications.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/permissionsroles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/profiles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/es/validation.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/availability.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/bookings.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/common.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/errors.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/fr.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/identities.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/messages.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/notifications.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/permissionsroles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/profiles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/fr/validation.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/availability.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/bookings.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/common.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/errors.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/identities.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/ja.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/messages.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/notifications.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/permissionsroles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/profiles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/ja/validation.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/availability.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/bookings.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/common.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/errors.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/identities.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/messages.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/nl.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/notifications.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/permissionsroles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/profiles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/nl/validation.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/auth.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/availability.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/bookings.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/common.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/errors.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/identities.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/messages.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/notifications.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/permissionsroles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/profiles.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/pt_BR.json
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/lang/pt_BR/validation.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/resources/views/welcome.blade.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/routes/api.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/routes/channels.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/routes/console.php
+https://raw.githubusercontent.com/dxhans5/smutsuite_backend/main/routes/web.php
+
