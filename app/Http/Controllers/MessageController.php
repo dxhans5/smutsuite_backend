@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
+use App\Http\Resources\MessageResource;
 use App\Models\Message;
 use App\Models\MessageThread;
 use Illuminate\Http\JsonResponse;
@@ -16,8 +18,8 @@ class MessageController extends Controller
      * Send a new message to a recipient identity.
      * If a thread does not exist between the sender and recipient, it is created.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function send(Request $request): JsonResponse
     {
@@ -44,13 +46,19 @@ class MessageController extends Controller
             'body'               => $request->body,
         ]);
 
-        return response()->json($message, 201);
+        // Add real-time broadcasting
+        broadcast(new MessageSent($message, $thread->id));
+
+        // Use MessageResource for consistent response format
+        return response()->json([
+            'data' => new MessageResource($message)
+        ], 201);
     }
 
     /**
      * Fetch all threads involving the current user's active identity.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function threads(): JsonResponse
     {
@@ -69,7 +77,7 @@ class MessageController extends Controller
      * Show all messages in a given thread, if the user is a participant.
      *
      * @param  string  $id  Thread ID
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -80,14 +88,16 @@ class MessageController extends Controller
             ->with(['messages.senderIdentity'])
             ->firstOrFail();
 
-        return response()->json(['data' => $thread->messages]);
+        return response()->json([
+            'data' => $thread->messages->map(fn($msg) => new MessageResource($msg))
+        ]);
     }
 
     /**
      * Mark a thread as read by updating the pivot timestamp.
      *
      * @param  string  $id  Thread ID
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function markAsRead(string $id): JsonResponse
     {
@@ -108,7 +118,7 @@ class MessageController extends Controller
      * Soft-delete a message if it was sent by the current identity.
      *
      * @param  string  $id  Message ID
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {

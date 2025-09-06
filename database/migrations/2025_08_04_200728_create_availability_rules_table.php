@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('availability_rules', function (Blueprint $table) {
-            $table->id(); // keep if you’re not using UUIDs for this table’s PK yet
+            $table->uuid('id')->primary();
             $table->uuid('identity_id');
             $table->foreign('identity_id')
                 ->references('id')->on('identities')
@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->time('start_time');
             $table->time('end_time');
             $table->string('booking_type')->default('chat'); // chat, call, in_person
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_available')->default(true); // Fixed field name
             $table->timestamps();
 
             // helpful indexes

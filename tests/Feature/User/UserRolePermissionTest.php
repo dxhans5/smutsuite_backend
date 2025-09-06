@@ -47,7 +47,9 @@ class UserRolePermissionTest extends TestCase
 
         $response->assertOk()
             ->assertJson([
-                'message' => __('permissionsroles.bulk_assign_success'),
+                'meta' => [
+                    'message' => __('permissionsroles.bulk_assign_success'),
+                ]
             ]);
 
         $target->refresh();
@@ -80,7 +82,9 @@ class UserRolePermissionTest extends TestCase
 
         $response->assertOk()
             ->assertJson([
-                'message' => __('permissionsroles.bulk_remove_success'),
+                'meta' => [
+                    'message' => __('permissionsroles.bulk_remove_success'),
+                ]
             ]);
 
         $target->refresh();
@@ -114,7 +118,9 @@ class UserRolePermissionTest extends TestCase
 
         $response->assertOk()
             ->assertJson([
-                'message' => __('permissionsroles.bulk_assign_success'),
+                'meta' => [
+                    'message' => __('permissionsroles.bulk_assign_success'),
+                ]
             ]);
 
         $target->refresh();
@@ -144,11 +150,4 @@ class UserRolePermissionTest extends TestCase
 //        $this->postJson("/api/users/{$target->id}/remove", $payload)
 //            ->assertUnauthorized();
 //    }
-
-
-
-
-
-
-
 }

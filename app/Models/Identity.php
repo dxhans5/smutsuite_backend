@@ -84,6 +84,11 @@ class Identity extends Model
         return $this->hasOne(PrivateProfile::class, 'identity_id');
     }
 
+    public function availabilityRules()
+    {
+        return $this->hasMany(AvailabilityRule::class);
+    }
+
     /* -----------------------------------------------------------------
      |  Scopes
      | -----------------------------------------------------------------

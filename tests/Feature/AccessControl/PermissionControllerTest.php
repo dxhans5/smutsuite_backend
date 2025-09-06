@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PermissionControllerTest extends TestCase
@@ -24,7 +25,7 @@ class PermissionControllerTest extends TestCase
         $this->actingAs($this->actor);
     }
 
-    /** @test */
+    #[Test]
     public function it_attaches_a_permission_and_returns_envelope(): void
     {
         $target = User::factory()->create();
@@ -46,7 +47,7 @@ class PermissionControllerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_conflicts_when_attaching_a_permission_twice(): void
     {
         $target = User::factory()->create();
@@ -64,7 +65,7 @@ class PermissionControllerTest extends TestCase
             ->assertJsonPath('meta.success', false);
     }
 
-    /** @test */
+    #[Test]
     public function it_detaches_a_permission_and_returns_envelope(): void
     {
         $target = User::factory()->create();
@@ -88,7 +89,7 @@ class PermissionControllerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_404s_when_detaching_a_permission_that_is_not_attached(): void
     {
         $target = User::factory()->create();
@@ -104,7 +105,7 @@ class PermissionControllerTest extends TestCase
             ->assertJsonPath('meta.success', false);
     }
 
-    /** @test */
+    #[Test]
     public function it_bulk_assigns_roles_and_permissions_without_detaching_existing(): void
     {
         $target = User::factory()->create();
@@ -140,7 +141,7 @@ class PermissionControllerTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_bulk_removes_roles_and_permissions(): void
     {
         $target = User::factory()->create();
@@ -179,7 +180,7 @@ class PermissionControllerTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function bulk_endpoints_allow_empty_payloads_as_noops(): void
     {
         $target = User::factory()->create();

@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Identity;
 use App\Models\BookingRequest;
+use App\Enums\BookingStatus;
+use App\Enums\BookingType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BookingRequestFactory extends Factory
@@ -15,8 +17,8 @@ class BookingRequestFactory extends Factory
             'creator_identity_id' => Identity::factory(),
             'client_identity_id' => Identity::factory(),
             'requested_at' => now()->addDays(2)->setTime(14, 0),
-            'booking_type' => 'chat',
-            'status' => 'pending',
+            'booking_type' => BookingType::CONSULTATION,  // Use enum instead of 'chat'
+            'status' => BookingStatus::PENDING,           // Use enum instead of 'pending'
             'notes' => $this->faker->sentence,
             'timezone' => 'America/Chicago',
         ];

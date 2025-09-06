@@ -33,5 +33,13 @@
         <env name="DB_USERNAME" value="postgres"/>
         <env name="DB_PASSWORD" value="ssdata!"/>
         <env name="LOG_CHANNEL" value="testing"/>
+
+        <env name="BROADCAST_CONNECTION" value="log"/>
+        <env name="REVERB_APP_ID" value="908285"/>
+        <env name="REVERB_APP_KEY" value="x4tpep51yli1k96oeaui"/>
+        <env name="REVERB_APP_SECRET" value="ssvahlibrfashtpibv0i"/>
+        <env name="REVERB_HOST" value="localhost"/>
+        <env name="REVERB_PORT" value="8080"/>
+        <env name="REVERB_SCHEME" value="http"/>
     </php>
 </phpunit>

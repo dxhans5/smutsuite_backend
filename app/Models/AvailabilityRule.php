@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class AvailabilityRule extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'identity_id',
@@ -15,11 +16,11 @@ class AvailabilityRule extends Model
         'start_time',
         'end_time',
         'booking_type',
-        'is_active',
+        'is_available',  // Fixed this field name
     ];
 
     protected $casts = [
-        'is_active' => 'bool',
+        'is_available' => 'bool',  // Fixed this field name
     ];
 
     public function identity()

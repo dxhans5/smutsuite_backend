@@ -52,7 +52,7 @@ class SchedulingTest extends TestCase
                 'day_of_week'  => 1,
                 'start_time'   => '10:00',
                 'end_time'     => '14:00',
-                'booking_type' => 'chat',
+                'booking_type' => 'consultation',
             ]],
         ];
 
@@ -98,7 +98,6 @@ class SchedulingTest extends TestCase
     public function another_user_can_view_creator_availability(): void {
         AvailabilityRule::factory()->create([
             'identity_id' => $this->creatorIdentity->id,
-            'is_active'   => true,
         ]);
 
         $this->actingAs($this->client)
@@ -112,7 +111,7 @@ class SchedulingTest extends TestCase
         $payload = [
             'creator_identity_id' => $this->creatorIdentity->id,
             'requested_at'        => now()->addDays(1)->format('Y-m-d H:i:s'),
-            'booking_type'        => 'chat',
+            'booking_type'        => 'consultation',
             'notes'               => 'Please be gentle.',
             'timezone'            => 'America/New_York',
         ];
@@ -120,7 +119,7 @@ class SchedulingTest extends TestCase
         $this->actingAs($this->client)
             ->postJson('/api/bookings', $payload)
             ->assertCreated()
-            ->assertJsonFragment(['booking_type' => 'chat']);
+            ->assertJsonFragment(['booking_type' => 'consultation']);
 
         $this->assertDatabaseHas('booking_requests', [
             'creator_identity_id' => $this->creatorIdentity->id,
