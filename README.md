@@ -1,267 +1,103 @@
 # 🌶️ SmutSuite
 
-**The consent-first API platform for intimacy-based creators, hosts, and service providers.**  
-Built for safety, freedom, and full-spectrum control.
+**The platform built specifically for adult creators, intimacy professionals, and their clients.**  
+Finally, technology that understands your work.
 
 ---
 
-## 🫶 For Creators, Hosts, and Service Providers
+## 🫶 For Creators and Service Providers
 
-SmutSuite isn't just another social app — it's your personal command center for professional intimacy work.
+### What SmutSuite Actually Does
 
-### ✅ Core Features (Live & Ready)
+**🎭 Multiple Professional Identities**  
+Run separate personas from one account. Keep your content creator identity completely separate from your coaching services. Each gets its own profile, client list, booking calendar, and reputation. Switch between them instantly without any cross-contamination.
 
-**🎭 Multi-Identity System**
-- Single account, multiple personas (Creator, Host, Service Provider, Admin)
-- Each identity has separate profiles, wallets, and reputation tracking
-- Seamless identity switching with full audit logging
-- Verification status per identity with flexible visibility controls
+**📅 Professional Booking System**  
+Set your availability once, clients book you properly. No more scheduling chaos or endless DMs asking "when are you free?" You control session types, advance notice requirements, and availability windows. Get notified instantly when someone books.
 
-**💬 Real-Time Communication**
-- WebSocket-powered messaging with thread participants
-- Read receipts and participant tracking
-- Live message broadcasting across all connected clients
-- Identity-scoped conversations with privacy controls
+**💬 Smart Client Communication**  
+Message clients without giving out personal contact info. Conversations stay organized by client with full message history. Built-in read receipts so you know when important messages are seen.
 
-**📅 Professional Scheduling**
-- Dynamic availability rules with day/time granularity
-- Real-time booking requests with status transitions
-- Live availability broadcasting to potential clients
-- Timezone-aware scheduling with conflict prevention
+**🗂️ Client Relationship Management**  
+Keep private notes on regulars - their preferences, boundaries, session history. Set follow-up reminders. Track repeat clients vs new ones. Build the professional relationships that create loyal customers.
 
-**🔒 Enterprise-Grade Security**
-- Sanctum authentication with hashed refresh tokens (30-day expiry)
-- Role-based access control with granular permissions
-- Policy-driven authorization for all sensitive operations
-- Complete audit trails for identity switches and booking changes
+**📍 Location Privacy Controls**  
+Hide from locals, show only to verified users, or go completely public - your choice. Granular geo-controls mean you decide exactly who can find you and where they can find you.
 
-**👤 Dual Profile Architecture**
-- Public profiles for discovery and marketing
-- Private profiles for CRM, notes, and emotional tracking
-- Identity-scoped profile management with owner-only access
-- Geo-visibility controls and local hiding options
+**⚡ Real-Time Everything**  
+Availability updates are instant. Booking requests notify you immediately. Messages deliver in real-time. No delays, no missed opportunities, no "sorry I didn't see this until now."
 
-**🔔 Smart Notifications**
-- Generic notification system with database persistence
-- Real-time push notifications for booking requests
-- Event-driven alerts for availability changes
-- Customizable notification preferences per identity
-
-**📡 Live Event Broadcasting**
-- Availability updates broadcast to discovery channels
-- Booking request notifications to relevant parties
-- Message delivery with real-time thread updates
-- Status changes propagated across all connected clients
-
-🔒 **Consent-first by design** — you're always in control.
+**🔒 Enterprise-Level Security**  
+Professional-grade authentication keeps your accounts secure. Role-based permissions mean collaborators only see what they need to. Complete audit trails for all sensitive actions.
 
 ---
 
-## 💸 For Investors and Partners
+## 💼 For Business-Minded Professionals
 
-**SmutSuite is not a clone.** It's what platforms like OnlyFans, Calendly, and Stripe *should have been* if they were designed for real-world intimacy-based work.
+### Why SmutSuite Beats Pieced-Together Solutions
 
-### What Makes It Different
+**🏗️ Built for Your Industry**  
+Not adapted from dating apps or social media. Designed from scratch for professional intimacy work with the features you actually need.
 
-🧠 **Sophisticated Identity Architecture** — One user, multiple professional personas with separate everything  
-📡 **Real-Time Infrastructure** — WebSocket broadcasting for availability, bookings, and messaging  
-🏗️ **API-First Design** — Built to power mobile + web from a single, robust Laravel backend  
-📍 **Location-Aware Discovery** — Granular geo-controls with local hiding and verified-only visibility  
-🗃️ **Professional CRM** — Session journaling, mood tracking, client notes, and consent logging  
-🧾 **Enterprise Admin Tools** — Comprehensive audit logs, permission management, and moderation infrastructure  
-🔄 **Real-Time Everything** — Live booking requests, availability updates, and message delivery  
-🧩 **Beyond Content** — Built for bookings, events, scheduling, and professional service delivery
+**💸 Revenue-Focused Design**  
+Every feature is built to help you make money more efficiently. Better client management = more repeat business. Professional booking = higher conversion rates. Organized communication = faster response times.
 
-### Current Platform Capabilities
+**📊 Scale Your Operations**  
+Start solo, grow to multiple personas, add collaborators, manage group events. The platform grows with your business instead of limiting it.
 
-**Authentication & Identity Management**
-- Multi-factor authentication with email verification
-- Hashed refresh token system with automatic rotation
-- Identity switching with complete audit trails
-- Role-based permissions with policy enforcement
+**🛡️ Safety Without Compromise**  
+Privacy controls that actually work. Professional boundaries built into the platform. Audit trails for dispute resolution. Safety features that don't kill your discoverability.
 
-**Real-Time Communication Infrastructure**
-- WebSocket message broadcasting via Laravel Reverb
-- Thread-based messaging with participant management
-- Read receipt tracking and online status indicators
-- Identity-scoped conversation privacy
-
-**Professional Booking System**
-- Dynamic availability rule management
-- Real-time booking request broadcasting
-- Status transition workflows (pending → confirmed → completed)
-- Calendar integration with timezone handling
-
-**Discovery & Visibility Controls**
-- Public profile management with visibility toggles
-- Geo-based discovery filtering and local hiding
-- Verification status integration with search algorithms
-- Real-time availability broadcasting to discovery channels
-
-**Administrative Infrastructure**
-- Comprehensive role and permission management
-- Identity verification workflows
-- Audit logging for all sensitive operations
-- Policy-driven access control across all endpoints
+**🎯 Target the Right Clients**  
+Verification systems filter out time-wasters. Booking requirements pre-qualify serious inquiries. Discovery settings attract your ideal client base while filtering out everyone else.
 
 ---
 
-## 🛠 Technical Architecture
+## 🚀 What Makes This Different
 
-| Layer         | Technology                 | Implementation Status |
-|---------------|----------------------------|----------------------|
-| Backend       | Laravel 12 (PHP 8.2.20)   | ✅ Production Ready  |
-| Database      | PostgreSQL + Redis         | ✅ Fully Configured  |
-| Real-Time     | WebSockets (Laravel Reverb)| ✅ Live Broadcasting |
-| Auth          | Sanctum + Refresh Tokens   | ✅ Enterprise Secure |
-| Messaging     | WebSocket + Thread System  | ✅ Real-Time DMs     |
-| Broadcasting  | Event-Driven Updates       | ✅ Live Everything   |
-| API Design    | JsonResource + Envelopes   | ✅ Consistent Format |
-| Permissions   | RBAC + Policy Authorization| ✅ Granular Control  |
-| CI/CD         | GitHub Actions             | 🚧 In Development   |
+| Traditional Platforms | SmutSuite |
+|----------------------|-----------|
+| 🚫 One identity fits all | 🎭 Multiple professional personas |
+| 📧 Email/DM chaos | 💬 Organized client communication |
+| 📅 Manual scheduling nightmare | ⚡ Automated booking system |
+| 🗃️ Scattered client info | 🗂️ Professional CRM tools |
+| 🌍 All-or-nothing visibility | 📍 Granular privacy controls |
+| 💔 Built for mainstream social | 🌶️ Built specifically for intimacy work |
 
-📱 **Frontend**: *In progress — API fully ready for PWA and Flutter implementation.*
-
----
-
-## ✅ Production-Ready Features
-
-### 🔐 Authentication & Security
-- [x] Sanctum-based API authentication with token management
-- [x] Hashed refresh tokens with 30-day expiry and rotation
-- [x] Email verification workflow with resend capabilities
-- [x] Age verification (21+) with birth date validation
-- [x] Google OAuth integration endpoints (ready for implementation)
-
-### 🎭 Multi-Identity System
-- [x] User account with multiple operational identities
-- [x] Identity types: User, Creator, Host, Service Provider, Content Provider
-- [x] Active identity switching with audit logging
-- [x] Verification status per identity (pending, verified, rejected)
-- [x] Identity-scoped visibility controls (public, members, hidden)
-
-### 👤 Profile Management
-- [x] Dual profile architecture (public + private per identity)
-- [x] Public profiles for discovery and marketing
-- [x] Private profiles for CRM, notes, and mood tracking
-- [x] Geo-visibility controls and local hiding
-- [x] Identity-scoped profile access with policy enforcement
-
-### 💬 Real-Time Messaging
-- [x] Thread-based messaging system with participant tracking
-- [x] WebSocket broadcasting for live message delivery
-- [x] Read receipt tracking with timestamp management
-- [x] Identity-scoped conversations with privacy controls
-- [x] Message soft-deletion with sender-only permissions
-
-### 📅 Professional Scheduling
-- [x] Dynamic availability rules with day/time granularity
-- [x] Real-time booking request system with status workflows
-- [x] Live availability broadcasting to discovery channels
-- [x] Booking status transitions with event broadcasting
-- [x] Timezone-aware scheduling with conflict detection
-
-### 🔔 Notification Infrastructure
-- [x] Generic notification system with database persistence
-- [x] Real-time notification broadcasting
-- [x] Notification preferences and read/unread tracking
-- [x] Event-driven notification triggers
-
-### 🔧 Administrative Features
-- [x] Role-based access control with granular permissions
-- [x] Policy-driven authorization across all endpoints
-- [x] User and permission management APIs
-- [x] Identity verification workflows
-- [x] Comprehensive audit logging for sensitive operations
-
-### 📡 Real-Time Broadcasting
-- [x] Availability update broadcasting
-- [x] Booking request and status change events
-- [x] Live message delivery across threads
-- [x] Discovery channel updates for online status
-
-### 🌍 Internationalization
-- [x] Full localization support with `__()` helper integration
-- [x] Localized error messages and user feedback
-- [x] Multi-language ready codebase structure
+**🧠 Smart Identity Management** → Separate your professional personas completely  
+**⚡ Real-Time Operations** → Everything happens instantly, not eventually  
+**🔒 Professional Privacy** → Control exactly who sees what, when, and where  
+**🎯 Revenue-Optimized** → Every feature designed to help you make money  
+**🛡️ Industry-Specific Safety** → Built for the unique challenges of intimacy work  
+**📱 Mobile-First Design** → Manage your business from anywhere
 
 ---
 
-## 🚧 Strategic Roadmap
+## ✅ Ready Now
 
-### Phase 1: Frontend Integration (Q1 2025)
-- [ ] 📱 Flutter mobile app development
-- [ ] 🌐 PWA implementation with offline support
-- [ ] 🎨 Creator dashboard with analytics
-- [ ] 📊 Admin panel with moderation tools
-
-### Phase 2: Monetization Infrastructure (Q2 2025)
-- [ ] 💳 Stripe Connect integration for multi-party payments
-- [ ] 💰 Creator tips and fan subscription system
-- [ ] 📈 Revenue analytics and tax reporting
-- [ ] 🔗 Public booking links with QR code generation
-
-### Phase 3: Advanced Safety & Discovery (Q3 2025)
-- [ ] 📍 Advanced geo-blocking and smart visibility controls
-- [ ] 🤖 AI-based mood and CRM suggestion engine
-- [ ] 🛡️ Enhanced safety tools and blocklist sharing
-- [ ] 🔍 Advanced search and discovery algorithms
-
-### Phase 4: Platform Expansion (Q4 2025)
-- [ ] 🖇️ Co-branded partner pages and white-label solutions
-- [ ] 🗃️ Advanced session archiving and tagging system
-- [ ] 🎭 Optional decentralized identity integration
-- [ ] 🌐 Multi-language platform expansion
+**🔐 Secure Authentication** → Professional login system with backup recovery  
+**🎭 Multi-Identity System** → Complete persona separation and switching  
+**💬 Real-Time Messaging** → Instant client communication with full history  
+**📅 Booking Management** → Automated scheduling with status tracking  
+**👤 Dual Profiles** → Public discovery profiles + private client management  
+**🔔 Smart Notifications** → Real-time alerts for bookings, messages, and updates  
+**📊 Business Analytics** → Track your most profitable activities and clients
 
 ---
 
-## 🔧 Development Standards
+## 🚧 Coming Soon
 
-### Architecture Principles
-- **API-Only Design**: Pure JSON API with no Blade views
-- **UUID Everywhere**: No auto-incrementing IDs across the entire platform
-- **Resource Pattern**: All responses via JsonResource with `{"data": ...}` envelope
-- **Event-Driven**: Real-time broadcasting for all major user actions
-- **Policy-Based Security**: Authorization handled through Laravel policies
-- **Multi-Identity First**: Every feature designed around identity-scoped access
-
-### Code Quality Standards
-- **Laravel 12.21.0** with **PHP 8.2.20** compatibility
-- **Comprehensive test coverage** with feature and unit tests
-- **Localization ready** with `__('key')` for all user-facing text
-- **Type-safe enums** for status fields and business logic
-- **Middleware-based security** for all sensitive operations
-- **Database-driven configuration** with environment-specific settings
-
-### Development Workflow
-- **Test-First Development**: All features built with comprehensive test coverage
-- **Real-Time Integration**: WebSocket broadcasting tested in all major workflows
-- **Identity-Scoped Testing**: All tests validate multi-identity behavior
-- **Policy Validation**: Authorization policies tested across all user types
-- **Event Broadcasting**: Real-time features validated with WebSocket test clients
+**💳 Integrated Payments** → Stripe Connect for tips, bookings, and subscriptions  
+**📱 Mobile Apps** → Native iOS and Android apps  
+**🤖 AI Assistance** → Smart client matching and mood-based recommendations  
+**🌍 Global Expansion** → Multi-language and multi-currency support
 
 ---
 
-## 🎯 Platform Differentiators
+> **This isn't social media. It's business infrastructure for professionals who deserve better tools.**
 
-🧠 **True Multi-Identity Architecture** — Not just user accounts with roles, but completely separate professional personas with independent reputation, finances, and visibility
-
-📡 **Real-Time Everything** — Built from the ground up for live interaction, not retrofitted with basic notifications
-
-🔒 **Consent-First Design Philosophy** — Every feature designed around explicit consent, boundary management, and user control
-
-🏗️ **Professional Infrastructure** — Enterprise-grade authentication, audit logging, and administrative controls built for serious business use
-
-🌍 **Global-Ready Platform** — Multi-language, multi-timezone, multi-currency architecture from day one
-
-🔧 **API-First Architecture** — Mobile-native design that can power any frontend implementation
-
----
-
-> **This isn't just an app. It's infrastructure for safety, consent, and real-world sex-positive work.**
-
-Let's build something better.
+**Ready to run your business like the professional you are?**
 
 —
 
-**🧠 SmutSuite Core Team**
+**🧠 SmutSuite Team**
